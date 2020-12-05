@@ -224,3 +224,6 @@ dmypy.json
 cython_debug/
 
 model/
+
+.jpg
+.png
