@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Anon_picked_randomName</folder>
+	<filename>a96b5458-3edf-4549-bae3-7a70fd098f50.jpg</filename>
+	<path>D:\Project_Anonymization\Anonymization-of-Dashcam-Recordings\res\Anon_picked_randomName\a96b5458-3edf-4549-bae3-7a70fd098f50.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1920</width>
+		<height>1080</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Vehicle registration plate</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1777</xmin>
+			<ymin>698</ymin>
+			<xmax>1920</xmax>
+			<ymax>738</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Vehicle registration plate</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1320</xmin>
+			<ymin>634</ymin>
+			<xmax>1401</xmax>
+			<ymax>656</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Vehicle registration plate</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>877</xmin>
+			<ymin>613</ymin>
+			<xmax>917</xmax>
+			<ymax>625</ymax>
+		</bndbox>
+	</object>
+</annotation>
