@@ -29,3 +29,4 @@ for img_path in TEST_IMAGE_PATHS:
     input_img = Img(img_path)
     input_img.detection_car_person(model)
     print(input_img.boxes_list[0]['detection_boxes'])  # car and person
+    print(input_img.merged_boxes)

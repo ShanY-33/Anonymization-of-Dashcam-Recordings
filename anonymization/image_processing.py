@@ -1,5 +1,6 @@
 from anonymization.utils import save_load
 from anonymization.utils import merge_boxes
+#from anonymization import utils
 import numpy as np
 from PIL import Image
 import tensorflow as tf
@@ -24,7 +25,8 @@ class Img():
         self.image_np = np.asarray(Image.open(image_path))
         self.height = self.image_np.shape[0]
         self.width = self.image_np.shape[1]
-        self.boxes_list = []  # boxes_list[0] --> car & person box, boxes_list[0] --> merged box, boxes_list[>1] --> subimage boxes
+        self.boxes_list = []  # boxes_list[0] --> car & person box, boxes_list[>0] --> subimage boxes
+        self.merged_boxes = []
         self.subimg = []
 
     def detection_all_classes(self, model, threshold):
@@ -69,12 +71,15 @@ class Img():
         output_dict_list['detection_scores'] = (output_dict_list['detection_scores']).tolist()
 
         for i in range(len-1, -1, -1):
-            if (output_dict['detection_classes'][i] in detection_classes):
+            if (output_dict['detection_classes'][i] not in detection_classes or output_dict['detection_scores'][i] < threshold):
                 del (output_dict_list['detection_boxes'])[i]
                 del (output_dict_list['detection_classes'])[i]
                 del (output_dict_list['detection_scores'])[i]
 
         self.boxes_list.append(output_dict)
+
+        self.merged_boxes = merge_boxes.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
+
 
 
 
