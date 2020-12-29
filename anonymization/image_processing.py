@@ -1,4 +1,5 @@
 from anonymization.utils import save_load
+from anonymization.utils import merge_boxes
 import numpy as np
 from PIL import Image
 import tensorflow as tf
@@ -15,6 +16,7 @@ tf.gfile = tf.io.gfile
 THRESHOLD_CAR_PERSON = 0.5
 THRESHOLD_FACE = 0.5
 THRESHOLD_PLATE = 0.5
+THRESHOLD_MERGE = 0.1
 
 
 class Img():
@@ -73,6 +75,8 @@ class Img():
                 del (output_dict_list['detection_scores'])[i]
 
         self.boxes_list.append(output_dict)
+
+
 
 
 
