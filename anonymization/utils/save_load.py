@@ -11,7 +11,7 @@ def get_image_paths(input_dir):
     return TEST_IMAGE_PATHS
 
 
-def save_image( image_np, file_name, output_dir):
+def save_image(image_np, file_name, output_dir):
     Image.fromarray(image_np).save(output_dir + str(file_name) + ".jpg")
 
 
@@ -21,3 +21,5 @@ def load_model(model_dir):
 
 def load_label(label_path):
     return(label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True))
+
+

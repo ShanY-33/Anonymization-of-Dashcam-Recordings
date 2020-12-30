@@ -1,5 +1,5 @@
 from anonymization.utils import save_load
-from anonymization.utils import merge_boxes
+from anonymization.utils import box_processing
 #from anonymization import utils
 import numpy as np
 from PIL import Image
@@ -14,7 +14,7 @@ utils_ops.tf = tf.compat.v1
 # Patch the location of gfile
 tf.gfile = tf.io.gfile
 
-THRESHOLD_CAR_PERSON = 0.5
+THRESHOLD_CAR_PERSON = 0.3
 THRESHOLD_FACE = 0.5
 THRESHOLD_PLATE = 0.5
 THRESHOLD_MERGE = 0.1
@@ -29,8 +29,8 @@ class Img():
         self.merged_boxes = []
         self.subimg = []
 
-    def detection_all_classes(self, model, threshold):
-        image = np.asarray(self.image_np)
+    def detection_all_classes(self, img_np,  model, threshold):
+        image = np.asarray(img_np)
         # The input needs to be a tensor, convert it using `tf.convert_to_tensor`.
         input_tensor = tf.convert_to_tensor(image)
         # The model expects a batch of images, so add an axis with `tf.newaxis`.
@@ -63,22 +63,28 @@ class Img():
 
     def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4)):
         # 1: person; 3: car; 4: motorcycle; 6: bus; 8: truck
-        output_dict = self.detection_all_classes(model, threshold)
+        output_dict = self.detection_all_classes(self.image_np, model, threshold)
         len = output_dict['detection_boxes'].shape[0]
         output_dict_list = output_dict.copy()
         output_dict_list['detection_boxes'] = (output_dict_list['detection_boxes']).tolist()
-        output_dict_list['detection_classes'] =(output_dict_list['detection_classes']).tolist()
+        output_dict_list['detection_classes'] = (output_dict_list['detection_classes']).tolist()
         output_dict_list['detection_scores'] = (output_dict_list['detection_scores']).tolist()
 
         for i in range(len-1, -1, -1):
-            if (output_dict['detection_classes'][i] not in detection_classes or output_dict['detection_scores'][i] < threshold):
+            if ((output_dict_list['detection_classes'][i] not in detection_classes) or (output_dict_list['detection_scores'][i] < threshold)):
                 del (output_dict_list['detection_boxes'])[i]
                 del (output_dict_list['detection_classes'])[i]
                 del (output_dict_list['detection_scores'])[i]
 
-        self.boxes_list.append(output_dict)
+        output_dict_list['detection_boxes'] = np.array(output_dict_list['detection_boxes'])
+        output_dict_list['detection_classes'] = np.array(output_dict_list['detection_classes'])
+        output_dict_list['detection_scores'] = np.array(output_dict_list['detection_scores'])
+        self.boxes_list.append(output_dict_list)
+        self.merged_boxes = box_processing.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
 
-        self.merged_boxes = merge_boxes.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
+
+        def detection_face_license(self, model, threshold=THRESHOLD_FACE):
+
 
 
 
