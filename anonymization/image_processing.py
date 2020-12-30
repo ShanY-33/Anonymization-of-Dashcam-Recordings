@@ -1,5 +1,6 @@
 from anonymization.utils import save_load
 from anonymization.utils import box_processing
+from anonymization.utils import convert_coordinate
 #from anonymization import utils
 import numpy as np
 from PIL import Image
@@ -64,26 +65,42 @@ class Img():
     def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4)):
         # 1: person; 3: car; 4: motorcycle; 6: bus; 8: truck
         output_dict = self.detection_all_classes(self.image_np, model, threshold)
+
         len = output_dict['detection_boxes'].shape[0]
         output_dict_list = output_dict.copy()
         output_dict_list['detection_boxes'] = (output_dict_list['detection_boxes']).tolist()
         output_dict_list['detection_classes'] = (output_dict_list['detection_classes']).tolist()
         output_dict_list['detection_scores'] = (output_dict_list['detection_scores']).tolist()
-
         for i in range(len-1, -1, -1):
             if ((output_dict_list['detection_classes'][i] not in detection_classes) or (output_dict_list['detection_scores'][i] < threshold)):
                 del (output_dict_list['detection_boxes'])[i]
                 del (output_dict_list['detection_classes'])[i]
                 del (output_dict_list['detection_scores'])[i]
-
         output_dict_list['detection_boxes'] = np.array(output_dict_list['detection_boxes'])
         output_dict_list['detection_classes'] = np.array(output_dict_list['detection_classes'])
         output_dict_list['detection_scores'] = np.array(output_dict_list['detection_scores'])
+
         self.boxes_list.append(output_dict_list)
         self.merged_boxes = box_processing.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
 
+    def detection_face_license(self, model, threshold=THRESHOLD_FACE):
+        xyhw_box = convert_coordinate.xyxy_to_xyhw(self.merged_boxes)
+        for i in range(len(xyhw_box)):
+            print(xyhw_box[i])
+            x, y, h, w = xyhw_box[i]
+            cropped_image = tf.image.crop_to_bounding_box(
+                                                    self.image_np,
+                                                    offset_height=x,
+                                                    offset_width=y,
+                                                    target_height=h,
+                                                    target_width=w
+                                                    )
+            output_dict = self.detection_all_classes(cropped_image, model, threshold)
+            if(output_dict['detection_boxes'].shape[0] > 0):
+                output_dict['detection_boxes'] = box_processing.calculate_position(self.merged_boxes[i], output_dict['detection_boxes'])
+                self.boxes_list.append(output_dict)
 
-        def detection_face_license(self, model, threshold=THRESHOLD_FACE):
+
 
 
 

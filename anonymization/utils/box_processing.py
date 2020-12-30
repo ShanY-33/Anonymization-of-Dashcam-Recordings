@@ -32,7 +32,7 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
 
                 # near
                 if __is_near(img_height, img_width, locs[i], locs[j]):
-                        locs[i] = [min(x_min, x_min2),min(y_min, y_min2),max(x_max, x_max2),max(y_max, y_max2)]
+                        locs[i] = [min(x_min, x_min2),min(y_min, y_min2), max(x_max, x_max2),max(y_max, y_max2)]
                         del locs[j]
                         if_modify = True
                         break
@@ -52,12 +52,11 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
     return locs
 
 
-def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
+def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True, extend=10):
     im_height, im_length = image_np.shape[0], image_np.shape[1]
     output_image = []
     abs_boxes = np.array(abs_boxes)
 
-    extend = 10
     for i in range(abs_boxes.shape[0]):
         cropped_image = tf.image.crop_to_bounding_box(
                                                     image_np,
@@ -75,6 +74,17 @@ def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
     return output_image
 
 
+def calculate_position(merged_box_position, boxes):
+    x_min, y_min, x_max, y_max = merged_box_position
+    img_h = x_max - x_min
+    img_w = y_max - y_min
+    abs_boxes = convert_coordinate.rel_to_abs(img_h, img_w, boxes)
+    abs_boxes[:, 0:: 2] += x_min
+    abs_boxes[:, 1:: 2] += y_min
+    rel_boxes = convert_coordinate.abs_to_rel(img_h, img_w, abs_boxes)
+    return rel_boxes
+
+
 def __is_almost_same_box(img_height, img_width, box1, box2, threshold=0.01):
     x_min, y_min, x_max, y_max = box1
     x_min2, y_min2, x_max2, y_max2 = box2
@@ -86,7 +96,7 @@ def __is_almost_same_box(img_height, img_width, box1, box2, threshold=0.01):
     return False
 
 
-def __is_near(img_height, img_width, box1, box2, threshold=0.1):
+def __is_near(img_height, img_width, box1, box2, threshold=0.01):
     x_min, y_min, x_max, y_max = box1
     x_min2, y_min2, x_max2, y_max2 = box2
     if ((__is_small_box(img_height, img_width, box1)) or
@@ -102,12 +112,14 @@ def __is_small_box(img_height, img_width, box, threshold=0.1):
     return ((box[3]-box[1]) < threshold*img_height) & ((box[2]-box[0]) < threshold*img_width)
 
 
-def __is_included(img_height, img_width, box1, box2, extend=0.1):
+def __is_included(img_height, img_width, box1, box2, extend=0.01):
     x_min, y_min, x_max, y_max = box1
     x_min2, y_min2, x_max2, y_max2 = box2
-    if((x_min < x_min2 + extend * img_width and y_min < y_min2+extend*img_height and x_max > x_max2 - extend * img_width and y_max > y_max2-extend*img_height) or
-       (x_min > x_min2 - extend * img_width and y_min > y_min2-extend*img_height and x_max < x_max2 + extend * img_width and y_max < y_max2 + extend * img_height)):
-        return True
+    if ((__is_small_box(img_height, img_width, box1)) or
+       (__is_small_box(img_height, img_width, box2))):
+        if((x_min < x_min2 + extend * img_width and y_min < y_min2+extend*img_height and x_max > x_max2 - extend * img_width and y_max > y_max2-extend*img_height) or
+           (x_min > x_min2 - extend * img_width and y_min > y_min2-extend*img_height and x_max < x_max2 + extend * img_width and y_max < y_max2 + extend * img_height)):
+            return True
     return False
 
 
