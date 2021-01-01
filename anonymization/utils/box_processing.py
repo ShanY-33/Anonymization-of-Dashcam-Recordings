@@ -3,17 +3,12 @@ from . import save_load
 import tensorflow as tf
 import numpy as np
 
+from object_detection.utils import ops as utils_ops
+from object_detection.utils import label_map_util
+from object_detection.utils import visualization_utils as vis_util
+
 
 def merge_boxes(img_height, img_width, boxes, threshold=0.1):
-    '''
-    merge bound boxes
-    Args:
-        locs-->list: [[x_min1,y_min1,x_max2,y_max2],...,[x_min1,y_min1,x_max2,y_max2]]
-        w: the width of the image
-        h: the height of the image
-        thre: threshold for judging if two bound box is near enough
-    '''
-
     locs = convert_coordinate.rel_to_abs(img_height, img_width, boxes).tolist()
 
     flag = False
@@ -83,6 +78,19 @@ def calculate_position(merged_box_position, boxes):
     abs_boxes[:, 1:: 2] += y_min
     rel_boxes = convert_coordinate.abs_to_rel(img_h, img_w, abs_boxes)
     return rel_boxes
+
+
+def show_inference(image_np, output_dict, label, threshold=0.5):
+    vis_util.visualize_boxes_and_labels_on_image_array(
+      image_np,
+      output_dict['detection_boxes'],
+      output_dict['detection_classes'],
+      output_dict['detection_scores'],
+      label,
+      instance_masks=output_dict.get('detection_masks_reframed', None),
+      use_normalized_coordinates=True,
+      min_score_thresh=threshold,
+      line_thickness=4)
 
 
 def __is_almost_same_box(img_height, img_width, box1, box2, threshold=0.01):

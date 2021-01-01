@@ -67,10 +67,10 @@ class Img():
         output_dict = self.detection_all_classes(self.image_np, model, threshold)
 
         len = output_dict['detection_boxes'].shape[0]
-        output_dict_list = output_dict.copy()
-        output_dict_list['detection_boxes'] = (output_dict_list['detection_boxes']).tolist()
-        output_dict_list['detection_classes'] = (output_dict_list['detection_classes']).tolist()
-        output_dict_list['detection_scores'] = (output_dict_list['detection_scores']).tolist()
+        output_dict_list = {}
+        output_dict_list['detection_boxes'] = (output_dict['detection_boxes']).tolist()
+        output_dict_list['detection_classes'] = (output_dict['detection_classes']).tolist()
+        output_dict_list['detection_scores'] = (output_dict['detection_scores']).tolist()
         for i in range(len-1, -1, -1):
             if ((output_dict_list['detection_classes'][i] not in detection_classes) or (output_dict_list['detection_scores'][i] < threshold)):
                 del (output_dict_list['detection_boxes'])[i]

@@ -1,16 +1,11 @@
-from object_detection.utils import ops as utils_ops
-from object_detection.utils import label_map_util
-from object_detection.utils import visualization_utils as vis_util
+import cv2 as cv
+from . import convert_coordinate
 
 
-def show_inference(image_np, output_dict, label, threshold=0.5):
-    vis_util.visualize_boxes_and_labels_on_image_array(
-      image_np,
-      output_dict['detection_boxes'],
-      output_dict['detection_classes'],
-      output_dict['detection_scores'],
-      label,
-      instance_masks=output_dict.get('detection_masks_reframed', None),
-      use_normalized_coordinates=True,
-      min_score_thresh=threshold,
-      line_thickness=4)
+def show_detected_boxes(image_np, boxes):
+    abs_box = convert_coordinate.rel_to_abs(boxes['detection_boxes'])
+    for i in range(abs_box.shape[0]):
+        x, y, right, bottom = abs_box[i]
+        cv.rectangle(image_np, (int(x), int(y)), (int(right), int(bottom)), (255, 255, 0), thickness=2)
+        cv.putText(image_np, "score:%.2f" % boxes['detection_scores'][i], (int(x), int(y)-1), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+    return image_np

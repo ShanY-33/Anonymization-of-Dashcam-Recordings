@@ -32,10 +32,15 @@ counter = 0
 for img_path in TEST_IMAGE_PATHS:
     input_img = Img(img_path)
     input_img.detection_car_person(model_car_person)
-    utils.visual.show_inference(input_img.image_np, input_img.boxes_list[0],label_car_person)
+    # print(input_img.boxes_list[0])
+    save_image = utils.visual.show_detected_boxes(input_img.image_np, input_img.boxes_list[0])
+    utils.save_load.save_image(save_image, 'img' + str(counter), output_dir)
+
+
+    # utils.box_processing.show_inference(input_img.image_np, input_img.boxes_list[0], label_car_person)
 
     # utils.box_processing.clip_boxes(input_img.image_np, input_img.merged_boxes, 'img' + str(counter), output_dir)
     # input_img.detection_face_license(model_face)
     # for j in range(1, len(input_img.boxes_list)):
     #     utils.box_processing.clip_boxes(input_img.image_np, input_img.boxes_list[j]['detection_boxes'], 'img' + str(counter), output_dir, extend=0)
-    # counter += 1
+    counter += 1
