@@ -16,8 +16,8 @@ utils_ops.tf = tf.compat.v1
 tf.gfile = tf.io.gfile
 
 THRESHOLD_CAR_PERSON = 0.3
-THRESHOLD_FACE = 0.5
-THRESHOLD_PLATE = 0.5
+THRESHOLD_FACE = 0.2
+THRESHOLD_PLATE = 0.2
 THRESHOLD_MERGE = 0.1
 
 
@@ -62,7 +62,7 @@ class Img():
             
         return(output_dict)
 
-    def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4)):
+    def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4, 6, 8)):
         # 1: person; 3: car; 4: motorcycle; 6: bus; 8: truck
         output_dict = self.detection_all_classes(self.image_np, model, threshold)
 
@@ -111,21 +111,21 @@ class Img():
             output_dict_list['detection_classes'] = (output_dict['detection_classes']).tolist()
             output_dict_list['detection_scores'] = (output_dict['detection_scores']).tolist()
 
-            for i in range(len_dict-1, -1, -1):
-                if (output_dict_list['detection_scores'][i] < threshold):
-                    del (output_dict_list['detection_boxes'])[i]
-                    del (output_dict_list['detection_classes'])[i]
-                    del (output_dict_list['detection_scores'])[i]
+            for j in range(len_dict-1, -1, -1):
+                if (output_dict_list['detection_scores'][j] < threshold):
+                    del (output_dict_list['detection_boxes'])[j]
+                    del (output_dict_list['detection_classes'])[j]
+                    del (output_dict_list['detection_scores'])[j]
             # output_dict_list['detection_boxes'] = np.array(output_dict_list['detection_boxes'])
             # output_dict_list['detection_classes'] = np.array(output_dict_list['detection_classes'])
             # output_dict_list['detection_scores'] = np.array(output_dict_list['detection_scores'])
             # print(output_dict_list['detection_boxes'])
             if len(output_dict_list['detection_boxes']) > 0:
                 output_dict_list['detection_boxes'] = box_processing.calculate_position(self.image_np, self.merged_boxes[i], output_dict_list['detection_boxes'])
-                for i in range(len(output_dict_list['detection_boxes'])):
-                    temp_output_dict['detection_boxes'].append(output_dict_list['detection_boxes'][i])
-                    temp_output_dict['detection_classes'].append(output_dict_list['detection_classes'][i])
-                    temp_output_dict['detection_scores'].append(output_dict_list['detection_scores'][i])
+                for k in range(len(output_dict_list['detection_boxes'])):
+                    temp_output_dict['detection_boxes'].append(output_dict_list['detection_boxes'][k])
+                    temp_output_dict['detection_classes'].append(output_dict_list['detection_classes'][k])
+                    temp_output_dict['detection_scores'].append(output_dict_list['detection_scores'][k])
 
         temp_output_dict['detection_boxes'] = np.array(temp_output_dict['detection_boxes'])
         temp_output_dict['detection_classes'] = np.array(temp_output_dict['detection_classes'])

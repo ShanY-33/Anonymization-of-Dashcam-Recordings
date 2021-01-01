@@ -39,22 +39,24 @@ for img_path in TEST_IMAGE_PATHS:
     input_img.detection_car_person(model_car_person)
 
     # 存 car和person的框
-    # save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[0])
-    # utils.save_load.save_image(save_image, 'img' + str(counter), output_dir)
+    save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[0])
+    utils.save_load.save_image(save_image, 'img' + str(counter), output_dir)
 
     # print(input_img.merged_boxes)
     utils.box_processing.clip_boxes(input_img.image_np, input_img.merged_boxes, 'img' + str(counter), output_dir)
-    input_img.detection_face_license(model_face)
+    input_img.detection_face_license(model_face_license)
+
     # for j in range(1, len(input_img.boxes_list)):
     #     clip_area = utils.convert_coordinate.rel_to_abs(input_img.height, input_img.width, input_img.boxes_list[j]['detection_boxes'])
     #     utils.box_processing.clip_boxes(input_img.image_np, clip_area, 'img' + str(counter) + str(j), output_dir)
     #     face_save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[j])
     #     utils.save_load.save_image(face_save_image, 'img' + str(counter) + str(j), output_dir)
     if input_img.boxes_list[1]['detection_boxes'].shape[0] > 0:
-        clip_area = utils.convert_coordinate.rel_to_abs(input_img.height, input_img.width, input_img.boxes_list[1]['detection_boxes'])
-        utils.box_processing.clip_boxes(input_img.image_np, clip_area, 'box' + str(counter), output_dir)
+        # clip_area = utils.convert_coordinate.rel_to_abs(input_img.height, input_img.width, input_img.boxes_list[1]['detection_boxes'])
+        # utils.box_processing.clip_boxes(input_img.image_np, clip_area, 'box' + str(counter), output_dir)
+
         face_save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[1])
-        utils.save_load.save_image(face_save_image, 'img' + str(counter), output_dir)
+        utils.save_load.save_image(face_save_image, 'img_face_license' + str(counter), output_dir)
     else:
         print('nothing was detected')
     counter += 1
