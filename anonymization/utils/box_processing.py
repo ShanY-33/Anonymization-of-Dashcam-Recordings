@@ -2,6 +2,7 @@ from . import convert_coordinate
 from . import save_load
 import tensorflow as tf
 import numpy as np
+import cv2 as cv
 
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
@@ -9,7 +10,8 @@ from object_detection.utils import visualization_utils as vis_util
 
 
 def merge_boxes(img_height, img_width, boxes, threshold=0.1):
-    locs = convert_coordinate.rel_to_abs(img_height, img_width, boxes).tolist()
+    boxes_copy = boxes.copy()
+    locs = convert_coordinate.rel_to_abs(img_height, img_width, boxes_copy).tolist()
 
     flag = False
     while not flag:
@@ -19,7 +21,7 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
             for j in range(i+1, len(locs)):
                 x_min2, y_min2, x_max2, y_max2 = locs[j]
 
-                if __calculate_overlap( locs[i], locs[j]) > 0.3:
+                if __calculate_overlap(locs[i], locs[j]) > 0.3:
                     locs[i] = [min(x_min, x_min2), min(y_min, y_min2),max(x_max, x_max2),max(y_max, y_max2)]
                     del locs[j]
                     if_modify = True
@@ -32,12 +34,12 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
                         if_modify = True
                         break
 
-                # include
-                if __is_included(img_height, img_width, locs[i], locs[j]):
-                    locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
-                    del locs[j]
-                    if_modify = True
-                    break
+                # # include
+                # if __is_included(img_height, img_width, locs[i], locs[j]):
+                #     locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
+                #     del locs[j]
+                #     if_modify = True
+                #     break
 
             if if_modify:
                 break
@@ -47,18 +49,17 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
     return locs
 
 
-def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True, extend=10):
-    im_height, im_length = image_np.shape[0], image_np.shape[1]
+def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
     output_image = []
-    abs_boxes = np.array(abs_boxes)
+    abs_boxes = np.array(abs_boxes.copy())
 
     for i in range(abs_boxes.shape[0]):
         cropped_image = tf.image.crop_to_bounding_box(
                                                     image_np,
-                                                    offset_height=int(max(abs_boxes[i, 0] - extend, 0)),
-                                                    offset_width=int(max(abs_boxes[i, 1] - extend, 0)),
-                                                    target_height=int(min(abs_boxes[i, 2] - abs_boxes[i, 0] + 2 * extend, im_height - abs_boxes[i, 0])),
-                                                    target_width=int(min(abs_boxes[i, 3] - abs_boxes[i, 1] + 2 * extend, im_length - abs_boxes[i, 1]))
+                                                    offset_height=int(abs_boxes[i, 0]),
+                                                    offset_width=int(abs_boxes[i, 1]),
+                                                    target_height=int(abs_boxes[i, 2] - abs_boxes[i, 0]),
+                                                    target_width=int(abs_boxes[i, 3] - abs_boxes[i, 1])
                                                     )
         output_image.append(np.array(cropped_image))
 
@@ -69,14 +70,15 @@ def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True, extend=10)
     return output_image
 
 
-def calculate_position(merged_box_position, boxes):
+def calculate_position(ori_image_np, merged_box_position, boxes):
     x_min, y_min, x_max, y_max = merged_box_position
     img_h = x_max - x_min
     img_w = y_max - y_min
     abs_boxes = convert_coordinate.rel_to_abs(img_h, img_w, boxes)
     abs_boxes[:, 0:: 2] += x_min
     abs_boxes[:, 1:: 2] += y_min
-    rel_boxes = convert_coordinate.abs_to_rel(img_h, img_w, abs_boxes)
+    height, width = ori_image_np.shape[0], ori_image_np.shape[1]
+    rel_boxes = convert_coordinate.abs_to_rel(height, width, abs_boxes)
     return rel_boxes
 
 
@@ -91,6 +93,27 @@ def show_inference(image_np, output_dict, label, threshold=0.5):
       use_normalized_coordinates=True,
       min_score_thresh=threshold,
       line_thickness=4)
+
+
+def show_detected_boxes(image_np, boxes):
+    image_copy = image_np.copy()
+    boxes_copy = boxes.copy()
+    im_height, im_length = image_np.shape[0], image_np.shape[1]
+    abs_box = convert_coordinate.rel_to_abs(im_height, im_length, boxes_copy['detection_boxes'])
+    for i in range(abs_box.shape[0]):
+        y, x, bottom, right = abs_box[i]
+        cv.rectangle(image_copy, (int(x), int(y)), (int(right), int(bottom)), (255, 255, 0), thickness=1)
+        cv.putText(image_copy, "score:%.2f" % boxes_copy['detection_scores'][i], (int(x), int(y)-1), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+    return image_copy
+
+
+def extend_boxes_area(img_height, img_width, abs_boxes, extend=10):
+    for i in range(len(abs_boxes)):
+        abs_boxes[i][0] = max(abs_boxes[i][0] - extend, 0)
+        abs_boxes[i][1] = max(abs_boxes[i][1] - extend, 0)
+        abs_boxes[i][2] = min(abs_boxes[i][2] + extend, img_height)
+        abs_boxes[i][3] = min(abs_boxes[i][3] + extend, img_width)
+    return abs_boxes
 
 
 def __is_almost_same_box(img_height, img_width, box1, box2, threshold=0.01):

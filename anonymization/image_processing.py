@@ -71,6 +71,7 @@ class Img():
         output_dict_list['detection_boxes'] = (output_dict['detection_boxes']).tolist()
         output_dict_list['detection_classes'] = (output_dict['detection_classes']).tolist()
         output_dict_list['detection_scores'] = (output_dict['detection_scores']).tolist()
+
         for i in range(len-1, -1, -1):
             if ((output_dict_list['detection_classes'][i] not in detection_classes) or (output_dict_list['detection_scores'][i] < threshold)):
                 del (output_dict_list['detection_boxes'])[i]
@@ -82,11 +83,17 @@ class Img():
 
         self.boxes_list.append(output_dict_list)
         self.merged_boxes = box_processing.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
+        self.merged_boxes = box_processing.extend_boxes_area(self.height, self.width, self.merged_boxes)
 
     def detection_face_license(self, model, threshold=THRESHOLD_FACE):
-        xyhw_box = convert_coordinate.xyxy_to_xyhw(self.merged_boxes)
+        merged_boxes_copy = self.merged_boxes.copy()
+        xyhw_box = convert_coordinate.xyxy_to_xyhw(merged_boxes_copy)
+        temp_output_dict = {}
+        temp_output_dict['detection_boxes'] = []
+        temp_output_dict['detection_classes'] = []
+        temp_output_dict['detection_scores'] = []
         for i in range(len(xyhw_box)):
-            print(xyhw_box[i])
+            # print(xyhw_box[i])
             x, y, h, w = xyhw_box[i]
             cropped_image = tf.image.crop_to_bounding_box(
                                                     self.image_np,
@@ -95,10 +102,35 @@ class Img():
                                                     target_height=h,
                                                     target_width=w
                                                     )
+
             output_dict = self.detection_all_classes(cropped_image, model, threshold)
-            if(output_dict['detection_boxes'].shape[0] > 0):
-                output_dict['detection_boxes'] = box_processing.calculate_position(self.merged_boxes[i], output_dict['detection_boxes'])
-                self.boxes_list.append(output_dict)
+
+            len_dict = output_dict['detection_boxes'].shape[0]
+            output_dict_list = {}
+            output_dict_list['detection_boxes'] = (output_dict['detection_boxes']).tolist()
+            output_dict_list['detection_classes'] = (output_dict['detection_classes']).tolist()
+            output_dict_list['detection_scores'] = (output_dict['detection_scores']).tolist()
+
+            for i in range(len_dict-1, -1, -1):
+                if (output_dict_list['detection_scores'][i] < threshold):
+                    del (output_dict_list['detection_boxes'])[i]
+                    del (output_dict_list['detection_classes'])[i]
+                    del (output_dict_list['detection_scores'])[i]
+            # output_dict_list['detection_boxes'] = np.array(output_dict_list['detection_boxes'])
+            # output_dict_list['detection_classes'] = np.array(output_dict_list['detection_classes'])
+            # output_dict_list['detection_scores'] = np.array(output_dict_list['detection_scores'])
+            # print(output_dict_list['detection_boxes'])
+            if len(output_dict_list['detection_boxes']) > 0:
+                output_dict_list['detection_boxes'] = box_processing.calculate_position(self.image_np, self.merged_boxes[i], output_dict_list['detection_boxes'])
+                for i in range(len(output_dict_list['detection_boxes'])):
+                    temp_output_dict['detection_boxes'].append(output_dict_list['detection_boxes'][i])
+                    temp_output_dict['detection_classes'].append(output_dict_list['detection_classes'][i])
+                    temp_output_dict['detection_scores'].append(output_dict_list['detection_scores'][i])
+
+        temp_output_dict['detection_boxes'] = np.array(temp_output_dict['detection_boxes'])
+        temp_output_dict['detection_classes'] = np.array(temp_output_dict['detection_classes'])
+        temp_output_dict['detection_scores'] = np.array(temp_output_dict['detection_scores'])
+        self.boxes_list.append(temp_output_dict)
 
 
 
