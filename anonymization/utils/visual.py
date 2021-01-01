@@ -1,5 +1,5 @@
-import cv2 as cv
 from . import convert_coordinate
+import cv2 as cv
 
 
 def show_detected_boxes(image_np, boxes):
