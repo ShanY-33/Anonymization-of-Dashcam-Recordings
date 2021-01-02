@@ -35,16 +35,14 @@ model_face_license = utils.save_load.load_model(model_face_license_dir)
 counter = 0
 for img_path in TEST_IMAGE_PATHS:
     input_img = Img(img_path)
-    # print(input_img.detection_all_classes(img_np=input_img.image_np, model=model_car_person, threshold=0.5)['detection_boxes'])
     input_img.detection_car_person(model_car_person)
 
     # 存 car和person的框
     save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[0])
     utils.save_load.save_image(save_image, 'img' + str(counter), output_dir)
 
-    # print(input_img.merged_boxes)
     utils.box_processing.clip_boxes(input_img.image_np, input_img.merged_boxes, 'img' + str(counter), output_dir)
-    input_img.detection_face_license(model_face_license)
+    input_img.detection_face_license(model_face)
 
     # for j in range(1, len(input_img.boxes_list)):
     #     clip_area = utils.convert_coordinate.rel_to_abs(input_img.height, input_img.width, input_img.boxes_list[j]['detection_boxes'])
