@@ -1,10 +1,7 @@
-# import anonymization
 from anonymization import utils
 from anonymization.image_processing import Img
 
 from object_detection.utils import ops as utils_ops
-from object_detection.utils import label_map_util
-from object_detection.utils import visualization_utils as vis_util
 
 import tensorflow as tf
 
@@ -21,16 +18,16 @@ TEST_IMAGE_PATHS = utils.save_load.get_image_paths(img_dir)
 model_car_person_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_v2_fpnlite/saved_model'
 label_car_person_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_v2_fpnlite/config/mscoco_label_map.pbtxt'
 model_car_person = utils.save_load.load_model(model_car_person_dir)
-#label_car_person = utils.save_load.load_label(label_car_person_path)
+# label_car_person = utils.save_load.load_label(label_car_person_path)
 
 model_face_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face/saved_model'
-#label_face_license_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face_license/config/label_map.pbtxt'
+# label_face_license_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face_license/config/label_map.pbtxt'
 model_face = utils.save_load.load_model(model_face_dir)
 
 model_face_license_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face_license/saved_model'
-#label_face_license_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face_license/config/label_map.pbtxt'
+# label_face_license_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face_license/config/label_map.pbtxt'
 model_face_license = utils.save_load.load_model(model_face_license_dir)
-#label_face = utils.save_load.load_label(label_face_path)
+# label_face = utils.save_load.load_label(label_face_path)
 
 counter = 0
 for img_path in TEST_IMAGE_PATHS:

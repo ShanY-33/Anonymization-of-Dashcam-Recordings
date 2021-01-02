@@ -1,14 +1,10 @@
-from anonymization.utils import save_load
 from anonymization.utils import box_processing
 from anonymization.utils import convert_coordinate
-#from anonymization import utils
 import numpy as np
 from PIL import Image
 import tensorflow as tf
 
 from object_detection.utils import ops as utils_ops
-from object_detection.utils import label_map_util
-from object_detection.utils import visualization_utils as vis_util
 
 # patch tf1 into `utils.ops`
 utils_ops.tf = tf.compat.v1
@@ -50,16 +46,16 @@ class Img():
 
         # detection_classes should be ints.
         output_dict['detection_classes'] = output_dict['detection_classes'].astype(np.int64)
-        
+
         # Handle models with masks:
         if 'detection_masks' in output_dict:
             # Reframe the the bbox mask to the image size.
             detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
                     output_dict['detection_masks'], output_dict['detection_boxes'],
-                    image.shape[0], image.shape[1])      
+                    image.shape[0], image.shape[1])
             detection_masks_reframed = tf.cast(detection_masks_reframed > threshold, tf.uint8)
             output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
-            
+
         return(output_dict)
 
     def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4, 6, 8)):
@@ -131,14 +127,3 @@ class Img():
         temp_output_dict['detection_classes'] = np.array(temp_output_dict['detection_classes'])
         temp_output_dict['detection_scores'] = np.array(temp_output_dict['detection_scores'])
         self.boxes_list.append(temp_output_dict)
-
-
-
-
-
-
-
-
-
-
-    

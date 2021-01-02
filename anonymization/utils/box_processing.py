@@ -4,8 +4,6 @@ import tensorflow as tf
 import numpy as np
 import cv2 as cv
 
-from object_detection.utils import ops as utils_ops
-from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
 
@@ -22,14 +20,14 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
                 x_min2, y_min2, x_max2, y_max2 = locs[j]
 
                 if __calculate_overlap(locs[i], locs[j]) > 0.3:
-                    locs[i] = [min(x_min, x_min2), min(y_min, y_min2),max(x_max, x_max2),max(y_max, y_max2)]
+                    locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
                     del locs[j]
                     if_modify = True
                     break
 
                 # near
                 if __is_near(img_height, img_width, locs[i], locs[j]):
-                        locs[i] = [min(x_min, x_min2),min(y_min, y_min2), max(x_max, x_max2),max(y_max, y_max2)]
+                        locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
                         del locs[j]
                         if_modify = True
                         break
@@ -66,7 +64,7 @@ def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
     if save:
         for i in range(len(output_image)):
             save_load.save_image(output_image[i], str(file_name) + '_box' + str(i), output_dir)
-    
+
     return output_image
 
 
@@ -187,3 +185,4 @@ def __calculate_overlap(box1, box2):
     area1 = w1 * h1
     area2 = w2 * h2
     return overlap_area / (area1 + area2 - overlap_area)
+    

@@ -21,5 +21,3 @@ def load_model(model_dir):
 
 def load_label(label_path):
     return(label_map_util.create_category_index_from_labelmap(label_path, use_display_name=True))
-
-
