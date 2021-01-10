@@ -185,6 +185,3 @@ def __calculate_overlap(box1, box2):
     area1 = w1 * h1
     area2 = w2 * h2
     return overlap_area / (area1 + area2 - overlap_area)
-
-
-    

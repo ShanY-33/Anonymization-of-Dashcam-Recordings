@@ -128,5 +128,3 @@ class Img():
         temp_output_dict['detection_scores'] = np.array(temp_output_dict['detection_scores'])
         self.boxes_list.append(temp_output_dict)
 
-
-

@@ -27,7 +27,8 @@ def load_label(label_path):
 def save_detection_result(image, file_name, output_dir):
     f = open(output_dir + file_name + ".txt", "w+")
     str_list = []
-    abs_box = convert_coordinate.rel_to_abs(image.height, image.width, image.boxes_list[1]['detection_boxes'])
+    if image.boxes_list[1]['detection_boxes'].shape[0] > 0:
+        abs_box = convert_coordinate.rel_to_abs(image.height, image.width, image.boxes_list[1]['detection_boxes'])
     for i in range(image.boxes_list[1]['detection_boxes'].shape[0]):
         str_line = ""
         if image.boxes_list[1]['detection_classes'][i] == 1:
@@ -35,7 +36,7 @@ def save_detection_result(image, file_name, output_dir):
         elif image.boxes_list[1]['detection_classes'][i] == 2:
             str_line += "license_plate" + " "
         str_line += str(round(image.boxes_list[1]['detection_scores'][i], 5)) + " "
-        str_line += str(abs_box[i, 0]) + " " + str(abs_box[i, 1]) + " " + str(abs_box[i, 2]) + " " + str(abs_box[i, 3]) + " "
+        str_line += str(abs_box[i, 1]) + " " + str(abs_box[i, 0]) + " " + str(abs_box[i, 3]) + " " + str(abs_box[i, 2]) + " "
         str_list.append(str_line)
     str_list = [line+'\n' for line in str_list]
     f.writelines(str_list)
