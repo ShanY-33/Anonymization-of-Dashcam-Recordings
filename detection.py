@@ -16,8 +16,8 @@ img_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/testimg
 output_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/testimg/output/'
 TEST_IMAGE_PATHS = utils.save_load.get_image_paths(img_dir)
 
-model_car_person_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_v2_fpnlite/saved_model'
-label_car_person_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_v2_fpnlite/config/mscoco_label_map.pbtxt'
+model_car_person_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model'
+label_car_person_path = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/mscoco_label_map.pbtxt'
 model_car_person = utils.save_load.load_model(model_car_person_dir)
 # label_car_person = utils.save_load.load_label(label_car_person_path)
 
