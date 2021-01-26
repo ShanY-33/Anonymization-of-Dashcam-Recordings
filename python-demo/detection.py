@@ -30,6 +30,7 @@ for img_path in TEST_IMAGE_PATHS:
     # 存 car和person的框
     save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[0])
     utils.save_load.save_image(save_image, 'img' + str(counter), output_dir + 'car_person/')
+
     # 存 merged box
     utils.box_processing.clip_boxes(input_img.image_np, input_img.merged_boxes, 'img' + str(counter), output_dir + 'box/')
     input_img.detection_face_license(model_face_license, threshold=0.2)
@@ -44,4 +45,5 @@ for img_path in TEST_IMAGE_PATHS:
     # 存box数据
     name = os.path.splitext(os.path.basename(img_path))[0]
     utils.save_load.save_detection_result(input_img, name, output_dir + 'detection/')
+    
     counter += 1
