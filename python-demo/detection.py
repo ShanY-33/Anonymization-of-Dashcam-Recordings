@@ -12,14 +12,14 @@ utils_ops.tf = tf.compat.v1
 # Patch the location of gfile
 tf.gfile = tf.io.gfile
 
-img_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/testimg/input'
-output_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/testimg/output/'
+img_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/python-demo/res/testimg/input'
+output_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/python-demo/res/testimg/output/'
 TEST_IMAGE_PATHS = utils.save_load.get_image_paths(img_dir)
 
-model_car_person_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model'
+model_car_person_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/python-demo/res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model'
 model_car_person = utils.save_load.load_model(model_car_person_dir)
 
-model_face_license_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/res/model/face_license2/saved_model'
+model_face_license_dir = '/home/shanshan/github/Anonymization-of-Dashcam-Recordings/python-demo/res/model/face_license/face_license2/saved_model'
 model_face_license = utils.save_load.load_model(model_face_license_dir)
 
 counter = 0
@@ -45,5 +45,5 @@ for img_path in TEST_IMAGE_PATHS:
     # 存box数据
     name = os.path.splitext(os.path.basename(img_path))[0]
     utils.save_load.save_detection_result(input_img, name, output_dir + 'detection/')
-    
+
     counter += 1
