@@ -1,6 +1,7 @@
 import pathlib
 import tensorflow as tf
 from . import convert_coordinate
+import numpy as np
 
 from PIL import Image
 from object_detection.utils import label_map_util
@@ -12,8 +13,11 @@ def get_image_paths(input_dir):
     return TEST_IMAGE_PATHS
 
 
-def save_image(image_np, file_name, output_dir):
-    Image.fromarray(image_np).save(output_dir + str(file_name) + ".jpg")
+def save_image(image, file_name, output_dir):
+    if type(image) == np.ndarray:
+        Image.fromarray(image).save(output_dir + str(file_name) + ".jpg")
+    else:
+        image.save(output_dir + str(file_name) + ".jpg")
 
 
 def load_model(model_dir):

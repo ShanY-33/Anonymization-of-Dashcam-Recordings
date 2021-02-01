@@ -1,10 +1,11 @@
 from anonymization.utils import box_processing
 from anonymization.utils import convert_coordinate
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 import tensorflow as tf
 
 from object_detection.utils import ops as utils_ops
+
 
 # patch tf1 into `utils.ops`
 utils_ops.tf = tf.compat.v1
@@ -128,3 +129,13 @@ class Img():
         temp_output_dict['detection_scores'] = np.array(temp_output_dict['detection_scores'])
         self.boxes_list.append(temp_output_dict)
 
+    def blurring(self):
+        # ymin, xmin, ymax, xmax
+        blurred_img = Image.fromarray(self.image_np)
+        if self.boxes_list[1]['detection_boxes'].shape[0] > 0:
+            abs_box = convert_coordinate.rel_to_abs(self.height, self.width, self.boxes_list[1]['detection_boxes'])
+            for box in abs_box:
+                clip_box = (box[1], box[0], box[3], box[2])
+                clips = blurred_img.crop(clip_box).filter(ImageFilter.GaussianBlur(radius=5))
+                blurred_img.paste(clips, clip_box)
+        return blurred_img
