@@ -23,11 +23,11 @@ class Img():
         self.image_np = np.asarray(Image.open(image_path))
         self.height = self.image_np.shape[0]
         self.width = self.image_np.shape[1]
-        self.boxes_list = []  # boxes_list[0] --> car & person box, boxes_list[>0] --> subimage boxes
+        self.boxes_list = []  # boxes_list[0] --> car & person box, boxes_list[1] --> face & license box
         self.merged_boxes = []
         self.subimg = []
 
-    def detection_all_classes(self, img_np,  model, threshold):
+    def gerneral_detection(self, img_np,  model, threshold):
         image = np.asarray(img_np)
         # The input needs to be a tensor, convert it using `tf.convert_to_tensor`.
         input_tensor = tf.convert_to_tensor(image)
@@ -61,7 +61,7 @@ class Img():
 
     def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4, 6, 8)):
         # 1: person; 3: car; 4: motorcycle; 6: bus; 8: truck
-        output_dict = self.detection_all_classes(self.image_np, model, threshold)
+        output_dict = self.gerneral_detection(self.image_np, model, threshold)
 
         len = output_dict['detection_boxes'].shape[0]
         output_dict_list = {}
@@ -90,7 +90,6 @@ class Img():
         temp_output_dict['detection_classes'] = []
         temp_output_dict['detection_scores'] = []
         for i in range(len(xyhw_box)):
-            # print(xyhw_box[i])
             x, y, h, w = xyhw_box[i]
             cropped_image = tf.image.crop_to_bounding_box(
                                                     self.image_np,
@@ -100,7 +99,7 @@ class Img():
                                                     target_width=w
                                                     )
 
-            output_dict = self.detection_all_classes(cropped_image, model, threshold)
+            output_dict = self.gerneral_detection(cropped_image, model, threshold)
 
             len_dict = output_dict['detection_boxes'].shape[0]
             output_dict_list = {}
@@ -113,10 +112,7 @@ class Img():
                     del (output_dict_list['detection_boxes'])[j]
                     del (output_dict_list['detection_classes'])[j]
                     del (output_dict_list['detection_scores'])[j]
-            # output_dict_list['detection_boxes'] = np.array(output_dict_list['detection_boxes'])
-            # output_dict_list['detection_classes'] = np.array(output_dict_list['detection_classes'])
-            # output_dict_list['detection_scores'] = np.array(output_dict_list['detection_scores'])
-            # print(output_dict_list['detection_boxes'])
+
             if len(output_dict_list['detection_boxes']) > 0:
                 output_dict_list['detection_boxes'] = box_processing.calculate_position(self.image_np, self.merged_boxes[i], output_dict_list['detection_boxes'])
                 for k in range(len(output_dict_list['detection_boxes'])):
@@ -130,7 +126,6 @@ class Img():
         self.boxes_list.append(temp_output_dict)
 
     def blurring(self):
-        # ymin, xmin, ymax, xmax
         blurred_img = Image.fromarray(self.image_np)
         if self.boxes_list[1]['detection_boxes'].shape[0] > 0:
             abs_box = convert_coordinate.rel_to_abs(self.height, self.width, self.boxes_list[1]['detection_boxes'])

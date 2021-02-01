@@ -10,7 +10,7 @@ Example usage:
     python detection.py \
         --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model \
         --model_face_license_dir=res/model/face_license/face_license2/saved_model \
-        --threshold=0.25 \
+        --threshold=0.2 \
         --input_dir=res/testimg/input/ \
         --output_dir=res/testimg/output/
 """
@@ -31,10 +31,10 @@ tf.gfile = tf.io.gfile
 
 
 def anonymization_process(model_car_person_dir,
-                                                        model_face_license_dir,
-                                                        threshold,
-                                                        input_dir,
-                                                        output_dir):
+                                                            model_face_license_dir,
+                                                            threshold,
+                                                            input_dir,
+                                                            output_dir):
 
     TEST_IMAGE_PATHS = utils.save_load.get_image_paths(input_dir)
     model_car_person = utils.save_load.load_model(model_car_person_dir)
@@ -59,7 +59,7 @@ def anonymization_process(model_car_person_dir,
             face_save_image = utils.box_processing.show_detected_boxes(input_img.image_np, input_img.boxes_list[1])
             utils.save_load.save_image(face_save_image, name, output_dir + 'face_license/')
         else:
-            print('nothing was detected')
+            utils.save_load.save_image(input_img.image_np, name, output_dir + 'face_license/')
 
         # save box data as .txt for evaluation
         utils.save_load.save_detection_result(input_img, name, output_dir + 'detection/')

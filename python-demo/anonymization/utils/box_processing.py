@@ -14,9 +14,9 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
     flag = False
     while not flag:
         if_modify = False
-        for i in range(len(locs)-1):
+        for i in range(len(locs)-1, 0, -1):
             x_min, y_min, x_max, y_max = locs[i]
-            for j in range(i+1, len(locs)):
+            for j in range(i-1, 0, -1):
                 x_min2, y_min2, x_max2, y_max2 = locs[j]
 
                 if __calculate_overlap(locs[i], locs[j]) > 0.3:
@@ -25,19 +25,11 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
                     if_modify = True
                     break
 
-                # near
                 if __is_near(img_height, img_width, locs[i], locs[j]):
                         locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
                         del locs[j]
                         if_modify = True
                         break
-
-                # # include
-                # if __is_included(img_height, img_width, locs[i], locs[j]):
-                #     locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
-                #     del locs[j]
-                #     if_modify = True
-                #     break
 
             if if_modify:
                 break
@@ -139,17 +131,6 @@ def __is_near(img_height, img_width, box1, box2, threshold=0.01):
 
 def __is_small_box(img_height, img_width, box, threshold=0.1):
     return ((box[3]-box[1]) < threshold*img_height) & ((box[2]-box[0]) < threshold*img_width)
-
-
-def __is_included(img_height, img_width, box1, box2, extend=0.01):
-    x_min, y_min, x_max, y_max = box1
-    x_min2, y_min2, x_max2, y_max2 = box2
-    if ((__is_small_box(img_height, img_width, box1)) or
-       (__is_small_box(img_height, img_width, box2))):
-        if((x_min < x_min2 + extend * img_width and y_min < y_min2+extend*img_height and x_max > x_max2 - extend * img_width and y_max > y_max2-extend*img_height) or
-           (x_min > x_min2 - extend * img_width and y_min > y_min2-extend*img_height and x_max < x_max2 + extend * img_width and y_max < y_max2 + extend * img_height)):
-            return True
-    return False
 
 
 def __calculate_overlap(box1, box2):
