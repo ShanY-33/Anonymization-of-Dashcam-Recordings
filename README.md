@@ -17,5 +17,6 @@ The code follows the steps given below:
 * Read the images from a directory.
 * Use the first model to detect the objects in the image.
 * Filter out the classes we need, i.e. vehicle and person, and merge some detection boxes.
-* Feed each merged box to the second model to detection human face and license plate.
-* 
+* Feed each merged boxes to the second model for detection of human faces and license plates.
+* Calculate the detected boxes position in the original image.
+* Blur the detected boxes area.
