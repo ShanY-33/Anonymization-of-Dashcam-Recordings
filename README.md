@@ -1,7 +1,7 @@
 # Anonymization of Dashcam Recordings
 
 ## Introduction
-In order to be able to use these images in research projects without hesitation, they should be made compliant with data protection laws. Faces as well as vehicle registration plates are to be made unrecognizable for this purpose.
+In order to be able to use these images in research projects without hesitation, they should be made compliant with data protection laws. Faces as well as vehicle registration plates are to be made unrecognizable for this purpose. In this project we have worked on the problem of tiny face and vehicle registration plates detection in the image from the dashcam. Our project is capable of detecting human face and vehicle registration plates in a given image and storing anonymized images. 
 
 ## Architecture
 The repository is split up into these directories:
@@ -10,7 +10,7 @@ The repository is split up into these directories:
 * `orga/` slides of each milestone and final paper
 * `model/` trained SSD Mobilenet model
 
-For more information about each directory, its contents and its functions, please consult the corresponding readme found in each directory.
+For more information about each directory, please consult the corresponding readme found in each directory.
 
 ## Approach
 The code follows the steps given below:
@@ -31,5 +31,3 @@ The code follows the steps given below:
 <img src="img/rst2.jpg" width="100%">
 <img src="img/rst3.jpg" width="100%">
 You can find project report [here](./UserGuide.md).
-
-
