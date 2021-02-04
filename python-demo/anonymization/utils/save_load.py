@@ -2,6 +2,7 @@ import pathlib
 import tensorflow as tf
 from . import convert_coordinate
 import numpy as np
+import os
 
 from PIL import Image
 from object_detection.utils import label_map_util
@@ -14,6 +15,8 @@ def get_image_paths(input_dir):
 
 
 def save_image(image, file_name, output_dir):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     if type(image) == np.ndarray:
         Image.fromarray(image).save(output_dir + str(file_name) + ".jpg")
     else:
@@ -29,6 +32,8 @@ def load_label(label_path):
 
 
 def save_detection_result(image, file_name, output_dir):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     f = open(output_dir + file_name + ".txt", "w+")
     str_list = []
     if image.boxes_list[1]['detection_boxes'].shape[0] > 0:
