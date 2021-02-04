@@ -27,9 +27,9 @@ The code follows the steps given below:
 
 
 ## Results
-<img src="overview-arch.jpg" width="100%">
-<img src="overview-arch.jpg" width="100%">
-<img src="overview-arch.jpg" width="100%">
+<img src="img/rst1.jpg" width="50%">
+<img src="img/rst2.jpg" width="75%">
+<img src="img/rst3.jpg" width="100%">
 You can find project report [here](./UserGuide.md).
 
 
