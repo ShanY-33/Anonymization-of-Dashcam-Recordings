@@ -21,6 +21,7 @@ The code follows the steps given below:
 * Feed each merged boxes to the second model for detection of human faces and license plates.
 * Calculate the detected boxes position in the original image.
 * Blur the correspond area.
+<img src="img/process.jpg" width="100%">
 
 
 
