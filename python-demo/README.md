@@ -1,9 +1,9 @@
 # Demo Code
 
 ## Overview
-* `detection.py` aaaa
-* `anonymization/` aaa
-* `res/` aaa
+* `detect.py` runs mdoel against given image and generates anonymized image
+* `anonymization/` This directory contrains the main part of the code.
+* `res/` This directory contains detection models and test images.
 
 ## Requirements
 ### Python Packages
@@ -18,14 +18,23 @@ Please find a detailed installation document [here](https://github.com/tensorflo
 
 
 ## Usage Example
+### Quick Test
+To have a quick test of the code, you can simply run `python detection.py` in Terminal. The test image in `res/testimg/input/` will be anonymized and you can find the output image in `res/testimg/input/anonymized/`.
+
+### Process Your Images
+If you want to anonymized your own images or use your own model, please follow the usage example.
 ```
-python detection.py \
-    --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model \
-    --model_face_license_dir=res/model/face_license/face_license2/saved_model \
-    --threshold=0.2 \
-    --input_dir=res/testimg/input/ \
-    --output_dir=res/testimg/output/
+    python detect.py \
+        --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model/ \
+        --model_face_license_dir=res/model/face_license/face_license2/saved_model/ \
+        --threshold=0.2 \
+        --detail=False\
+        --input_dir=res/testimg/input/ \
+        --output_dir=res/testimg/output/
 ```
-
-
-
+* `model_car_person_dir` This directory contains the model for car and person detection. There should be a `*.pb` model in this directory.
+* `model_face_license_dir` This directory contains the model for human face and vehicle license plate detection. There should be a `*.pb` model in this directory.
+* `threshold` Confidence threshold. It is recommended to set the confidence threshold between 0.2 ~ 0.3.
+* `detail` If you set `detail` as `True`, the output of each important step will be saved. In `car_pereson/` you will find the detected vehicle and person. In `merged_box/` you will find all mereged box, which is the input of second model. In `face_license/` you will find the detected human face and license plate as well as confidence of each detected box.In `box_position/` you will find the box position saved as *.txt file. The data is organized in this form `class confidence x_min y_min x_max y_max`.
+* `input_dir` The directory of input images.
+* `output_dir` The directory for saving anonymized images.

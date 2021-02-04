@@ -8,8 +8,8 @@ import tensorflow as tf
 """
 Example usage:
     python detect.py \
-        --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model \
-        --model_face_license_dir=res/model/face_license/face_license2/saved_model \
+        --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model/ \
+        --model_face_license_dir=res/model/face_license/face_license2/saved_model/ \
         --threshold=0.2 \
         --detail=False\
         --input_dir=res/testimg/input/ \
