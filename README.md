@@ -15,8 +15,15 @@ For more information about each directory, its contents and its functions, pleas
 ## Approach
 The code follows the steps given below:
 * Read the images from a directory.
-* Use the first model to detect the objects in the image.
-* Filter out the classes we need, i.e. vehicle and person, and merge some detection boxes.
+* Use the first model to detect all objects in the image.
+* According the label we can filter out the classes that we need, i.e. vehicle and person.
+* Merge the overlapped and adjacent boxes.
 * Feed each merged boxes to the second model for detection of human faces and license plates.
 * Calculate the detected boxes position in the original image.
-* Blur the detected boxes area.
+* Blur the correspond area.
+
+
+
+
+
+## Results
