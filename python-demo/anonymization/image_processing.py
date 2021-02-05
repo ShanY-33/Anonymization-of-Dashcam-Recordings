@@ -13,8 +13,7 @@ utils_ops.tf = tf.compat.v1
 tf.gfile = tf.io.gfile
 
 THRESHOLD_CAR_PERSON = 0.3
-THRESHOLD_FACE = 0.2
-THRESHOLD_PLATE = 0.2
+THRESHOLD_FACE_LICENSE = 0.2
 THRESHOLD_MERGE = 0.1
 
 
@@ -82,7 +81,7 @@ class Img():
         self.merged_boxes = box_processing.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
         self.merged_boxes = box_processing.extend_boxes_area(self.height, self.width, self.merged_boxes)
 
-    def detection_face_license(self, model, threshold=THRESHOLD_FACE):
+    def detection_face_license(self, model, threshold=THRESHOLD_FACE_LICENSE):
         merged_boxes_copy = self.merged_boxes.copy()
         xyhw_box = convert_coordinate.xyxy_to_xyhw(merged_boxes_copy)
         temp_output_dict = {}

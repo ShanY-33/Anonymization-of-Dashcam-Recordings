@@ -4,6 +4,7 @@ from anonymization.image_processing import Img
 import os.path
 from object_detection.utils import ops as utils_ops
 import tensorflow as tf
+import time
 
 """
 Example usage:
@@ -43,6 +44,9 @@ def anonymization_process(model_car_person_dir,
     model_car_person = utils.save_load.load_model(model_car_person_dir)
     model_face_license = utils.save_load.load_model(model_face_license_dir)
 
+    counter = 0
+    start = time.time()
+
     for img_path in TEST_IMAGE_PATHS:
         input_img = Img(img_path)
         name = os.path.splitext(os.path.basename(img_path))[0]
@@ -67,6 +71,12 @@ def anonymization_process(model_car_person_dir,
 
         # save anonymiazed results
         utils.save_load.save_image(blurred_img, name, output_dir + 'anonymized/')
+        counter += 1
+
+    end = time.time()
+    print(counter, 'images was anonymized')
+    print('total time cost:% .2f s' % (end-start))
+    print('average time cost: % .2f s' % ((end-start)/counter))
 
 
 def main(_):
