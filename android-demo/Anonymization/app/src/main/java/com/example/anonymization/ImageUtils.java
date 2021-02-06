@@ -149,6 +149,13 @@ public class ImageUtils {
             }
             if (!ifModify) flag = true;
         }
+        for (Recognition recognition : recognitionList
+        ) {
+            Rect rect = recognition.getLocation();
+            recognition.setLocation(extendBoundary(bitmap, rect));
+            recognition.setLabel("merged");
+            recognition.setProb(1);
+        }
         return recognitionList;
     }
 
@@ -182,12 +189,13 @@ public class ImageUtils {
     }
 
     private static boolean isNear(Bitmap bitmap, Rect rect1, Rect rect2) {
-        boolean xNear,yNear;
+        boolean xNear, yNear;
+        final float THRESHOLD = 0.1f;
         if (isSmall(bitmap, rect1) || isSmall(bitmap, rect2)) {
             xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
-                    < 0.1 * bitmap.getHeight() + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
+                    < THRESHOLD * bitmap.getHeight() + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
             yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
-                    < 0.1 * bitmap.getHeight() + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
+                    < THRESHOLD * bitmap.getHeight() + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
             return xNear && yNear;
         }
         return false;
@@ -196,6 +204,16 @@ public class ImageUtils {
     private static boolean isSmall(Bitmap bitmap, Rect rect) {
         return ((rect.bottom - rect.top) < 0.1 * bitmap.getHeight()
                 && (rect.right - rect.left) < 0.1 * bitmap.getWidth());
+    }
+
+    private static Rect extendBoundary(Bitmap bitmap, Rect rect) {
+        final int EXTENSION = 10;
+        rect.left = Math.max(0, rect.left - EXTENSION);
+        rect.top = Math.max(0, rect.top - EXTENSION);
+        rect.right = Math.min(bitmap.getWidth(), rect.right + EXTENSION);
+        rect.bottom = Math.min(bitmap.getHeight(), rect.bottom + EXTENSION);
+        return rect;
+
     }
 
 }

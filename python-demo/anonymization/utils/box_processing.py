@@ -26,10 +26,10 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
                     break
 
                 if __is_near(img_height, img_width, locs[i], locs[j]):
-                        locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
-                        del locs[j]
-                        if_modify = True
-                        break
+                    locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
+                    del locs[j]
+                    if_modify = True
+                    break
 
             if if_modify:
                 break
@@ -148,10 +148,6 @@ def __calculate_overlap(box1, box2):
     '''
     x1, y1, x_max, y_max = box1
     x2, y2, x_max2, y_max2 = box2
-    # w1 = y_max - y1
-    # h1 = x_max - x1
-    # w2 = y_max2 - y2
-    # h2 = x_max2 - x2
     h1 = y_max - y1
     w1 = x_max - x1
     h2 = y_max2 - y2
