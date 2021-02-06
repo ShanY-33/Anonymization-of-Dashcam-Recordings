@@ -2,7 +2,7 @@ package com.example.anonymization;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.util.Log;
 
 import org.tensorflow.lite.Interpreter;
@@ -95,7 +95,7 @@ public class Detector {
             if (prob > 0.5) {
                 String label = labels.get((int) outputClasses[0][i] + 1);
                 System.out.println(label);
-                RectF location = new RectF(
+                Rect location = new Rect(
                         Math.round(outputLocations[0][i][1] * imageSizeX),
                         Math.round(outputLocations[0][i][0] * imageSizeY),
                         Math.round(outputLocations[0][i][3] * imageSizeX),

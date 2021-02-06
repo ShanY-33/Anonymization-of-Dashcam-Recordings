@@ -2,7 +2,10 @@ package com.example.anonymization;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.util.Size;
+
+import java.util.List;
 
 public class ImageUtils {
 
@@ -108,11 +111,63 @@ public class ImageUtils {
     }
 
     protected static Bitmap cropImg(Bitmap bitmap, Recognition recognition) {
-        int imageSizeX = bitmap.getWidth(), imageSizeY = bitmap.getHeight();
-        int left = Math.round(recognition.getLocation().left * imageSizeX);
-        int top = Math.round(recognition.getLocation().top * imageSizeY);
-        int right = Math.round(recognition.getLocation().right * imageSizeX);
-        int bottom = Math.round(recognition.getLocation().bottom * imageSizeY);
-        return Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top);
+        return Bitmap.createBitmap(bitmap, recognition.getLocation().left,
+                recognition.getLocation().top,
+                recognition.getLocation().right - recognition.getLocation().left,
+                recognition.getLocation().bottom - recognition.getLocation().top);
     }
+
+    protected static List<Recognition> mergeRecognition(Bitmap bitmap, List<Recognition> recognitionList){
+        boolean flag = false;
+        int left1, top1, right1, bottom1;
+        int left2, top2, right2, bottom2;
+        while (!flag){
+            boolean ifModify = false;
+            for (int i = recognitionList.size()-1; i >0 ; i--) {
+                left1 = recognitionList.get(i).getLocation().left;
+                top1 = recognitionList.get(i).getLocation().top;
+                right1 = recognitionList.get(i).getLocation().right;
+                bottom1 = recognitionList.get(i).getLocation().bottom;
+                for (int j = i-1; j >0; j--){
+                    left2 = recognitionList.get(j).getLocation().left;
+                    top2 = recognitionList.get(j).getLocation().top;
+                    right2 = recognitionList.get(j).getLocation().right;
+                    bottom2 = recognitionList.get(j).getLocation().bottom;
+
+
+                }
+
+
+            }
+
+        }
+
+        return recognitionList;
+    }
+
+    private static float calculateIOU(Bitmap bitmap, Rect rect1, Rect rect2) {
+        float IOU;
+        int width1 = rect1.right - rect1.left, width2 = rect2.right - rect2.left;
+        int height1 = rect1.bottom - rect1.top, height2 = rect2.bottom - rect2.top;
+
+
+        return IOU;
+    }
+
+    private static boolean isNear(Bitmap bitmap, Rect rect1, Rect rect2) {
+        if (isSmall(bitmap, rect1) || isSmall(bitmap, rect2)) {
+            boolean xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
+                    < 0.1 * bitmap.getHeight() + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
+            boolean yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
+                    < 0.1 * bitmap.getHeight() + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
+            if (xNear && yNear) return true;
+        }
+        return false;
+    }
+
+    private static boolean isSmall(Bitmap bitmap, Rect rect) {
+        return ((rect.bottom - rect.top) < 0.1 * bitmap.getHeight()
+                && (rect.right - rect.left) < 0.1 * bitmap.getWidth());
+    }
+
 }
