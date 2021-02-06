@@ -1,13 +1,14 @@
 package com.example.anonymization;
 
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 public class Recognition {
     private String label;
-    private Rect location;
+    private RectF location;
     private float prob;
 
-    public Recognition(String label, Rect location, float prob) {
+    public Recognition(String label, RectF location, float prob) {
         this.label = label;
         this.location = location;
         this.prob = prob;
@@ -17,7 +18,7 @@ public class Recognition {
         return label;
     }
 
-    public Rect getLocation() {
+    public RectF getLocation() {
         return location;
     }
 
@@ -25,7 +26,7 @@ public class Recognition {
         this.label = label;
     }
 
-    public void setLocation(Rect location) {
+    public void setLocation(RectF location) {
         this.location = location;
     }
 

@@ -110,7 +110,7 @@ public class ImageUtils {
 
         return 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
     }
-
+/*
     protected static Bitmap cropImg(Bitmap bitmap, Recognition recognition) {
         return Bitmap.createBitmap(bitmap, recognition.getLocation().left,
                 recognition.getLocation().top,
@@ -214,6 +214,6 @@ public class ImageUtils {
         rect.bottom = Math.min(bitmap.getHeight(), rect.bottom + EXTENSION);
         return rect;
 
-    }
+    }*/
 
 }

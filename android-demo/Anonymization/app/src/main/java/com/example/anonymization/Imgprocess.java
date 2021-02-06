@@ -13,8 +13,9 @@ public class Imgprocess {
     private Bitmap scaledBitmap;
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
+    private Matrix normToCropTransform;
     private int previewHeight, previewWidth;
-    private static final int SCALE_SIZE = 300;
+    private static final int SCALE_SIZE = 640;
 
     private Detector detector;
     private OverlayView overlayView;
@@ -28,6 +29,15 @@ public class Imgprocess {
         frameToCropTransform = ImageUtils.getTransformationMatrix(
                 previewWidth,
                 previewHeight,
+                SCALE_SIZE,
+                SCALE_SIZE,
+                0,
+                false
+        );
+
+        normToCropTransform = ImageUtils.getTransformationMatrix(
+                1,
+                1,
                 SCALE_SIZE,
                 SCALE_SIZE,
                 0,
@@ -50,9 +60,13 @@ public class Imgprocess {
         List<Recognition> recognitions = detector.detect(scaledBitmap);
         System.out.println("Detection is finished");
 
-        //map to frameimg
+        //Normolized to Scaled
         for(Recognition recognition : recognitions) {
-            cropToFrameTransform.mapRect(new RectF(recognition.getLocation()));
+            normToCropTransform.mapRect(recognition.getLocation());
+        }
+        //Scaled to Frameimg
+        for(Recognition recognition : recognitions) {
+            cropToFrameTransform.mapRect(recognition.getLocation());
         }
 
         overlayView.setRecognitions(recognitions);

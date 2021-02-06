@@ -52,11 +52,11 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
             Matrix frameToCanvasMatrix = getFrameToCanvasMatrix(canvas, framebitmap);
 
             for (Recognition r : recognitions) {
-                RectF rectF = new RectF(r.getLocation());
-                frameToCanvasMatrix.mapRect(rectF);
+                //RectF rectF = new RectF(r.getLocation());
+                frameToCanvasMatrix.mapRect(r.getLocation());
                 //System.out.println(r.getLocation());
-                float cornerSize = Math.min(rectF.width(), rectF.height()) / 8.0f;
-                canvas.drawRoundRect(rectF, cornerSize, cornerSize, borderPaint);
+                float cornerSize = Math.min(r.getLocation().width(), r.getLocation().height()) / 8.0f;
+                canvas.drawRoundRect(r.getLocation(), cornerSize, cornerSize, borderPaint);
 
                 String labelString = String.format("%s %.2f%%", r.getLabel(), (100 * r.getProb()));
                 canvas.drawText(
@@ -73,9 +73,8 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
         int frameWidth = bitmap.getWidth();
         int frameHeight = bitmap.getHeight();
 
-        float multiplierh = canvas.getHeight()/(float) frameHeight;
         float multiplierw = canvas.getWidth()/(float) frameWidth;
-
+        float multiplierh = canvas.getHeight()/(float) frameHeight;
 
         return ImageUtils.getTransformationMatrix(
                 frameWidth,
