@@ -148,10 +148,14 @@ def __calculate_overlap(box1, box2):
     '''
     x1, y1, x_max, y_max = box1
     x2, y2, x_max2, y_max2 = box2
-    w1 = y_max - y1
-    h1 = x_max - x1
-    w2 = y_max2 - y2
-    h2 = x_max2 - x2
+    # w1 = y_max - y1
+    # h1 = x_max - x1
+    # w2 = y_max2 - y2
+    # h2 = x_max2 - x2
+    h1 = y_max - y1
+    w1 = x_max - x1
+    h2 = y_max2 - y2
+    w2 = x_max2 - x2
     if(x1 > x2 + w2):
         return 0
     if(y1 > y2 + h2):
