@@ -67,8 +67,8 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
     }
 
     private Matrix getFrameToCanvasMatrix(Canvas canvas, Bitmap bitmap) {
-        int frameWidth = bitmap.getWidth();
-        int frameHeight = bitmap.getHeight();
+        int frameWidth = 300;  //bitmap.getWidth();
+        int frameHeight = 300;//bitmap.getHeight();
         int orientation = 0;
 
         boolean rotated = orientation % 180 == 90;

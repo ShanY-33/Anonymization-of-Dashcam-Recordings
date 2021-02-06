@@ -13,7 +13,7 @@ public class Imgprocess {
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
     private int previewHeight, previewWidth;
-    private static final int SCALE_SIZE = 640;
+    private static final int SCALE_SIZE = 300;
 
     private Detector detector;
     private OverlayView overlayView;

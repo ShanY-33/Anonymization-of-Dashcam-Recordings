@@ -56,7 +56,7 @@ public class Detector {
                 bitmap.getHeight()
         );
 
-        int numBytesPerChannel = 4;
+        int numBytesPerChannel = 1;
         ByteBuffer imgData = ByteBuffer.allocateDirect(
                 1 * imageSizeX * imageSizeY * 3 * numBytesPerChannel);
         imgData.order(ByteOrder.nativeOrder());
@@ -64,13 +64,15 @@ public class Detector {
         for (int i = 0; i < imageSizeY; i++) {
             for (int j = 0; j < imageSizeX; j++) {
                 int pixelValue = intValues[i * imageSizeX + j];
-                /*
+
                 imgData.put((byte) ((pixelValue >> 16) & 0xFF));
                 imgData.put((byte) ((pixelValue >> 8) & 0xFF));
-                imgData.put((byte) (pixelValue & 0xFF));*/
+                imgData.put((byte) (pixelValue & 0xFF));
+
+                /*
                 imgData.putFloat((((pixelValue >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
                 imgData.putFloat((((pixelValue >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
-                imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
+                imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);*/
             }
         }
 
@@ -90,7 +92,7 @@ public class Detector {
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {
             float prob = outputScores[0][i];
-            if (prob > 0.3) {
+            if (prob > 0.5) {
                 String label = labels.get((int) outputClasses[0][i] + 1);
                 System.out.println(label);
                 RectF location = new RectF(
