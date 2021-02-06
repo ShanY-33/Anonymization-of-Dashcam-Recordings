@@ -1,5 +1,6 @@
 package com.example.anonymization;
 
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.Size;
 
@@ -104,5 +105,14 @@ public class ImageUtils {
         b = b > kMaxChannelValue ? kMaxChannelValue : (b < 0 ? 0 : b);
 
         return 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
+    }
+
+    protected static Bitmap cropImg(Bitmap bitmap, Recognition recognition) {
+        int imageSizeX = bitmap.getWidth(), imageSizeY = bitmap.getHeight();
+        int left = Math.round(recognition.getLocation().left * imageSizeX);
+        int top = Math.round(recognition.getLocation().top * imageSizeY);
+        int right = Math.round(recognition.getLocation().right * imageSizeX);
+        int bottom = Math.round(recognition.getLocation().bottom * imageSizeY);
+        return Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top);
     }
 }

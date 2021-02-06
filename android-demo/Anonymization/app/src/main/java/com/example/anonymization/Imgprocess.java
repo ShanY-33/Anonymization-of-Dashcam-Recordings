@@ -56,12 +56,5 @@ public class Imgprocess {
         overlayView.postInvalidate();
     }
 
-    protected Bitmap CropImg(Bitmap bitmap, Recognition recognition) {
-        int imageSizeX = bitmap.getWidth(), imageSizeY = bitmap.getHeight();
-        int left = Math.round(recognition.getLocation().left * imageSizeX);
-        int top = Math.round(recognition.getLocation().top * imageSizeY);
-        int right = Math.round(recognition.getLocation().right * imageSizeX);
-        int bottom = Math.round(recognition.getLocation().bottom * imageSizeY);
-        return (Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top));
-    }
+
 }
