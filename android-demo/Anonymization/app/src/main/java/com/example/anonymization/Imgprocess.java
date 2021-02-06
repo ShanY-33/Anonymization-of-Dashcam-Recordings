@@ -48,9 +48,10 @@ public class Imgprocess {
         overlayView.setImageBitmap(scaledBitmap);
         List<Recognition> recognitions = detector.detect(scaledBitmap);
         System.out.println("Detection is finished");
+        /*
         for(Recognition recognition : recognitions) {
             cropToFrameTransform.mapRect(recognition.getLocation());
-        }
+        }*/
 
         overlayView.setRecognitions(recognitions);
         overlayView.postInvalidate();
