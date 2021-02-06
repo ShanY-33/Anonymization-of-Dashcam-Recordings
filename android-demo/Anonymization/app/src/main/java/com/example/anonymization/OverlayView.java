@@ -55,7 +55,7 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
                 RectF rectF = new RectF(r.getLocation());
                 frameToCanvasMatrix.mapRect(rectF);
                 //System.out.println(r.getLocation());
-                float cornerSize = Math.min(r.getLocation().width(), r.getLocation().height()) / 8.0f;
+                float cornerSize = Math.min(rectF.width(), rectF.height()) / 8.0f;
                 canvas.drawRoundRect(rectF, cornerSize, cornerSize, borderPaint);
 
                 String labelString = String.format("%s %.2f%%", r.getLabel(), (100 * r.getProb()));

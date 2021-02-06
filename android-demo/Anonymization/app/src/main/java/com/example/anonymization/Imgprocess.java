@@ -3,6 +3,7 @@ package com.example.anonymization;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.RectF;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class Imgprocess {
 
         //map to frameimg
         for(Recognition recognition : recognitions) {
-            cropToFrameTransform.mapRect(recognition.getLocation());
+            cropToFrameTransform.mapRect(new RectF(recognition.getLocation()));
         }
 
         overlayView.setRecognitions(recognitions);

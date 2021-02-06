@@ -96,11 +96,15 @@ public class Detector {
                 String label = labels.get((int) outputClasses[0][i] + 1);
                 System.out.println(label);
                 Rect location = new Rect(
-                        Math.round(outputLocations[0][i][1] * imageSizeX),
-                        Math.round(outputLocations[0][i][0] * imageSizeY),
-                        Math.round(outputLocations[0][i][3] * imageSizeX),
-                        Math.round(outputLocations[0][i][2] * imageSizeY)
+//                        Math.round(outputLocations[0][i][1] * imageSizeX),
+//                        Math.round(outputLocations[0][i][0] * imageSizeY),
+//                        Math.round(outputLocations[0][i][3] * imageSizeX*(-1)),
+//                        Math.round(outputLocations[0][i][2] * imageSizeY)
                 );
+                location.left = Math.round(outputLocations[0][i][1] * imageSizeX);
+                location.top = Math.round(outputLocations[0][i][0] * imageSizeY);
+                location.right =Math.round(outputLocations[0][i][3] * imageSizeX);
+                location.bottom= Math.round(outputLocations[0][i][2] * imageSizeY);
                 recognitions.add(new Recognition(label, location, prob));
             }
         }
