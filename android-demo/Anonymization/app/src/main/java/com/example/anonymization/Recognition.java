@@ -21,6 +21,18 @@ public class Recognition {
         return location;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLocation(Rect location) {
+        this.location = location;
+    }
+
+    public void setProb(float prob) {
+        this.prob = prob;
+    }
+
     public float getProb() {
         return prob;
     }

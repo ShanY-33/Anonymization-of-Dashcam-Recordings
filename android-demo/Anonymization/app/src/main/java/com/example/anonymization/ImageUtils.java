@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Size;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ImageUtils {
@@ -117,50 +118,77 @@ public class ImageUtils {
                 recognition.getLocation().bottom - recognition.getLocation().top);
     }
 
-    protected static List<Recognition> mergeRecognition(Bitmap bitmap, List<Recognition> recognitionList){
+    protected static List<Recognition> mergeRecognitions(Bitmap bitmap, List<Recognition> recognitionList){
         boolean flag = false;
-        int left1, top1, right1, bottom1;
-        int left2, top2, right2, bottom2;
-        while (!flag){
-            boolean ifModify = false;
-            for (int i = recognitionList.size()-1; i >0 ; i--) {
-                left1 = recognitionList.get(i).getLocation().left;
-                top1 = recognitionList.get(i).getLocation().top;
-                right1 = recognitionList.get(i).getLocation().right;
-                bottom1 = recognitionList.get(i).getLocation().bottom;
-                for (int j = i-1; j >0; j--){
-                    left2 = recognitionList.get(j).getLocation().left;
-                    top2 = recognitionList.get(j).getLocation().top;
-                    right2 = recognitionList.get(j).getLocation().right;
-                    bottom2 = recognitionList.get(j).getLocation().bottom;
+        boolean ifModify;
+        Rect rect1, rect2;
 
+        while (!flag) {
+            ifModify = false;
+            for (int i = recognitionList.size() - 1; i > 0; i--) {
+                rect1 = recognitionList.get(i).getLocation();
+                for (int j = i - 1; j > 0; j--) {
+                    rect2 = recognitionList.get(i).getLocation();
+
+                    if (calculateIOU(bitmap, rect1, rect2) > 0.3) {
+                        recognitionList.get(i).setLocation(mergeTwoRects(rect1, rect2));
+                        recognitionList.remove(j);
+                        ifModify = true;
+                        break;
+                    }
+
+                    if (isNear(bitmap, rect1, rect2)) {
+                        recognitionList.get(i).setLocation(mergeTwoRects(rect1, rect2));
+                        recognitionList.remove(j);
+                        ifModify = true;
+                        break;
+                    }
 
                 }
-
-
+                if (ifModify) break;
             }
-
+            if (!ifModify) flag = true;
         }
-
         return recognitionList;
+    }
+
+    private static Rect mergeTwoRects(Rect rect1, Rect rect2) {
+        Rect mergedRect = new Rect();
+        mergedRect.left = Math.min(rect1.left, rect2.left);
+        mergedRect.right = Math.max(rect1.right, rect2.right);
+        mergedRect.top = Math.min(rect1.top, rect2.top);
+        mergedRect.bottom = Math.max(rect1.bottom, rect2.bottom);
+        return mergedRect;
+
     }
 
     private static float calculateIOU(Bitmap bitmap, Rect rect1, Rect rect2) {
         float IOU;
         int width1 = rect1.right - rect1.left, width2 = rect2.right - rect2.left;
         int height1 = rect1.bottom - rect1.top, height2 = rect2.bottom - rect2.top;
+        int overlapWidth, overlapHeight;
+        int overlapArea, totalArea;
 
-
-        return IOU;
+        if (rect1.left > rect2.right || rect2.left > rect1.right || rect1.top > rect2.bottom || rect2.top > rect1.bottom)
+            return 0;
+        else {
+            overlapWidth = Math.abs(Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left));
+            overlapHeight = Math.abs(Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
+            overlapArea = overlapHeight * overlapWidth;
+            totalArea = width1 * height1 + width2 * height2;
+            IOU = overlapArea / (totalArea - overlapArea);
+            return IOU;
+        }
     }
 
     private static boolean isNear(Bitmap bitmap, Rect rect1, Rect rect2) {
+        boolean xNear,yNear;
         if (isSmall(bitmap, rect1) || isSmall(bitmap, rect2)) {
-            boolean xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
+            xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
                     < 0.1 * bitmap.getHeight() + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
-            boolean yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
+            yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
                     < 0.1 * bitmap.getHeight() + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
-            if (xNear && yNear) return true;
+            return xNear && yNear;
         }
         return false;
     }
