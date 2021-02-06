@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -51,9 +52,11 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
             Matrix frameToCanvasMatrix = getFrameToCanvasMatrix(canvas, framebitmap);
 
             for (Recognition r : recognitions) {
-                frameToCanvasMatrix.mapRect(r.getLocation());
+                RectF rectF = new RectF(r.getLocation());
+                frameToCanvasMatrix.mapRect(rectF);
+                //System.out.println(r.getLocation());
                 float cornerSize = Math.min(r.getLocation().width(), r.getLocation().height()) / 8.0f;
-                canvas.drawRoundRect(r.getLocation(), cornerSize, cornerSize, borderPaint);
+                canvas.drawRoundRect(rectF, cornerSize, cornerSize, borderPaint);
 
                 String labelString = String.format("%s %.2f%%", r.getLabel(), (100 * r.getProb()));
                 canvas.drawText(
@@ -67,22 +70,19 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
     }
 
     private Matrix getFrameToCanvasMatrix(Canvas canvas, Bitmap bitmap) {
-        int frameWidth = 300;  //bitmap.getWidth();
-        int frameHeight = 300;//bitmap.getHeight();
-        int orientation = 0;
+        int frameWidth = bitmap.getWidth();
+        int frameHeight = bitmap.getHeight();
 
-        boolean rotated = orientation % 180 == 90;
-        float multiplier = Math.min(
-                canvas.getHeight() / (float) (rotated ? frameWidth : frameHeight),
-                canvas.getWidth() / (float) (rotated ? frameHeight : frameWidth)
-        );
+        float multiplierh = canvas.getHeight()/(float) frameHeight;
+        float multiplierw = canvas.getWidth()/(float) frameWidth;
+
 
         return ImageUtils.getTransformationMatrix(
                 frameWidth,
                 frameHeight,
-                (int) (multiplier * frameHeight),
-                (int) (multiplier * frameWidth),
-                orientation,
+                (int) (multiplierw * frameWidth),
+                (int) (multiplierh * frameHeight),
+                0,
                 false
         );
     }

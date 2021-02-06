@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/input_img"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="255dp"
         android:scaleType="fitXY"/>
 
     <TextView
@@ -33,9 +33,10 @@
 
     <com.example.anonymization.OverlayView
         android:id="@+id/overlayView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="5dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="255dp"
+        android:layout_marginTop="5dp"
+        android:scaleType="fitXY"/>
 
     <TextView
         android:id="@+id/label2"
