@@ -45,6 +45,7 @@ public class Imgprocess {
     }
 
     protected void detectprocess(){
+        overlayView.setImageBitmap(scaledBitmap);
         List<Recognition> recognitions = detector.detect(scaledBitmap);
         System.out.println("Detection is finished");
         for(Recognition recognition : recognitions) {

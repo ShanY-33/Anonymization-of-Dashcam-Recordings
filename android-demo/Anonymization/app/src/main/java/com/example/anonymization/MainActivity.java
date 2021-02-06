@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
             output_img.setFramebitmap(bitmap);
             Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector);
             imgprocess.ScaleImg();
-            output_img.setImageBitmap(bitmap);
             imgprocess.detectprocess();
 
         } else {
