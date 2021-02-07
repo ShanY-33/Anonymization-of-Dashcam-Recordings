@@ -110,15 +110,15 @@ public class ImageUtils {
 
         return 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
     }
-/*
+
     protected static Bitmap cropImg(Bitmap bitmap, Recognition recognition) {
-        return Bitmap.createBitmap(bitmap, recognition.getLocation().left,
-                recognition.getLocation().top,
-                recognition.getLocation().right - recognition.getLocation().left,
-                recognition.getLocation().bottom - recognition.getLocation().top);
+        return Bitmap.createBitmap(bitmap, recognition.getLocationInt().left,
+                recognition.getLocationInt().top,
+                recognition.getLocationInt().right - recognition.getLocationInt().left,
+                recognition.getLocationInt().bottom - recognition.getLocationInt().top);
     }
 
-    protected static List<Recognition> mergeRecognitions(Bitmap bitmap, List<Recognition> recognitionList){
+    protected static List<Recognition> mergeRecognitions(Bitmap bitmap, List<Recognition> recognitionList) {
         boolean flag = false;
         boolean ifModify;
         Rect rect1, rect2;
@@ -126,19 +126,19 @@ public class ImageUtils {
         while (!flag) {
             ifModify = false;
             for (int i = recognitionList.size() - 1; i > 0; i--) {
-                rect1 = recognitionList.get(i).getLocation();
+                rect1 = recognitionList.get(i).getLocationInt();
                 for (int j = i - 1; j > 0; j--) {
-                    rect2 = recognitionList.get(i).getLocation();
+                    rect2 = recognitionList.get(i).getLocationInt();
 
                     if (calculateIOU(bitmap, rect1, rect2) > 0.3) {
-                        recognitionList.get(i).setLocation(mergeTwoRects(rect1, rect2));
+                        recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
                         recognitionList.remove(j);
                         ifModify = true;
                         break;
                     }
 
                     if (isNear(bitmap, rect1, rect2)) {
-                        recognitionList.get(i).setLocation(mergeTwoRects(rect1, rect2));
+                        recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
                         recognitionList.remove(j);
                         ifModify = true;
                         break;
@@ -151,8 +151,8 @@ public class ImageUtils {
         }
         for (Recognition recognition : recognitionList
         ) {
-            Rect rect = recognition.getLocation();
-            recognition.setLocation(extendBoundary(bitmap, rect));
+            Rect rect = recognition.getLocationInt();
+            recognition.setLocationInt(extendBoundary(bitmap, rect));
             recognition.setLabel("merged");
             recognition.setProb(1);
         }
@@ -206,7 +206,7 @@ public class ImageUtils {
                 && (rect.right - rect.left) < 0.1 * bitmap.getWidth());
     }
 
-    private static Rect extendBoundary(Bitmap bitmap, Rect rect) {
+    protected static Rect extendBoundary(Bitmap bitmap, Rect rect) {
         final int EXTENSION = 10;
         rect.left = Math.max(0, rect.left - EXTENSION);
         rect.top = Math.max(0, rect.top - EXTENSION);
@@ -214,6 +214,5 @@ public class ImageUtils {
         rect.bottom = Math.min(bitmap.getHeight(), rect.bottom + EXTENSION);
         return rect;
 
-    }*/
-
+    }
 }

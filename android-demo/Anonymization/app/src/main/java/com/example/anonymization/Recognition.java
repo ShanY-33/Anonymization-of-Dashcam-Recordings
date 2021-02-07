@@ -8,7 +8,7 @@ public class Recognition {
     private RectF location;
     private float prob;
 
-    private final Rect locationInt;
+    private Rect locationInt;
     private final int imgHeight;
     private final int imgWidth;
 
@@ -50,6 +50,18 @@ public class Recognition {
 
     public void setLocation(RectF location) {
         this.location = location;
+        this.locationInt = new Rect(Math.round(location.left * imgWidth),
+                Math.round(location.top * imgHeight),
+                Math.round(location.right * imgWidth),
+                Math.round(location.bottom * imgHeight));
+    }
+
+    public void setLocationInt(Rect locationInt) {
+        this.locationInt = locationInt;
+        this.location = new RectF(locationInt.left / (float) imgWidth,
+                locationInt.top / (float) imgHeight,
+                locationInt.right / (float) imgWidth,
+                locationInt.bottom / (float) imgHeight);
     }
 
     public void setProb(float prob) {
@@ -59,6 +71,7 @@ public class Recognition {
     public float getProb() {
         return prob;
     }
+
 
     @Override
     public String toString() {
