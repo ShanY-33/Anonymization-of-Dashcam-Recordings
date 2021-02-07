@@ -15,7 +15,7 @@ public class Imgprocess {
     private Bitmap frameBitmap;
     private int previewHeight, previewWidth;
     private Bitmap scaledBitmap;
-    private Bitmap scaledBitmap2;
+    //private Bitmap scaledBitmap2;
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
     private Matrix normToCropTransform;
@@ -55,7 +55,7 @@ public class Imgprocess {
         frameToCropTransform.invert(cropToFrameTransform);
 
         scaledBitmap = Bitmap.createBitmap(SCALE_SIZE1, SCALE_SIZE1, Bitmap.Config.ARGB_8888);
-        scaledBitmap2 = Bitmap.createBitmap(SCALE_SIZE2, SCALE_SIZE2, Bitmap.Config.ARGB_8888);
+        //scaledBitmap2 = Bitmap.createBitmap(SCALE_SIZE2, SCALE_SIZE2, Bitmap.Config.ARGB_8888);
     }
 
     private void ScaleImg(Bitmap srcBitmap, Bitmap dstBitmap, Matrix transformMatrix){
@@ -82,6 +82,7 @@ public class Imgprocess {
         List<Bitmap> scaledCropedBitmapsList = new ArrayList<>();
         for (Bitmap bitmap:cropedBitmapsList
              ) {
+
             cropToScaledCropTransform = ImageUtils.getTransformationMatrix(
                     bitmap.getWidth(),
                     bitmap.getHeight(),
@@ -90,9 +91,11 @@ public class Imgprocess {
                     0,
                     false
             );
+            Bitmap scaledBitmap2 = Bitmap.createBitmap(SCALE_SIZE2, SCALE_SIZE2, Bitmap.Config.ARGB_8888);
             ScaleImg(bitmap, scaledBitmap2, cropToScaledCropTransform);
             scaledCropedBitmapsList.add(scaledBitmap2);
         }
+        //overlayView.setImageBitmap(scaledCropedBitmapsList.get(1));
 
         List<List<Recognition>> recognitionListList = new ArrayList<>();
         for (int i = 0; i < scaledCropedBitmapsList.size(); i++) {

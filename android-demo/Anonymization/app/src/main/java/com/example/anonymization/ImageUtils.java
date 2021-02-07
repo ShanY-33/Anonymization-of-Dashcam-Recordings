@@ -123,6 +123,7 @@ public class ImageUtils {
 
     protected static List<Recognition> filteroutRecognitions(String[] classes, List<Recognition> recognitionList){
         Set<String> classesSet = new HashSet<String>(Arrays.asList(classes));
+        //System.out.println(classesSet.size());
         for (int i = recognitionList.size()-1; i >0 ; i--) {
             if(!classesSet.contains(recognitionList.get(i).getLabel())) recognitionList.remove(i);
         }
