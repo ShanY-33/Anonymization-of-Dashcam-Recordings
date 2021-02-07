@@ -100,7 +100,6 @@ public class Detector {
             float prob = outputScores[0][i];
             if (prob > this.THRESHOLD) {
                 String label = labels.get((int) outputClasses[0][i] + 1);
-                System.out.println(label);
                 RectF location = new RectF(
                         outputLocations[0][i][1] * 1,
                         outputLocations[0][i][0] * 1,
