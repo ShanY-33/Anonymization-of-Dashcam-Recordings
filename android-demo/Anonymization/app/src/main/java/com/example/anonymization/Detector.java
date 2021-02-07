@@ -62,6 +62,10 @@ public class Detector {
                 bitmap.getHeight()
         );
 
+
+        /*//quantized model
+        int numBytesPerChannel = 1;*/
+        //float model
         int numBytesPerChannel = 4;
         ByteBuffer imgData = ByteBuffer.allocateDirect(
                 1 * imageSizeX * imageSizeY * 3 * numBytesPerChannel);
@@ -106,7 +110,6 @@ public class Detector {
                         outputLocations[0][i][3] * 1,
                         outputLocations[0][i][2] * 1
                 );
-
                 recognitions.add(new Recognition(label, location, prob, originalImg.getHeight(), originalImg.getWidth()));
             }
         }
