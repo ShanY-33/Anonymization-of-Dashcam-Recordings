@@ -62,11 +62,12 @@ public class Imgprocess {
 //        recognitionList = ImageUtils.extendRecognitions(this.frameBitmap,recognitionList);
 
         System.out.println("Detection is finished");
-        /*
+
         //Normolized to Scaled
         for(Recognition recognition : recognitions) {
             normToCropTransform.mapRect(recognition.getLocation());
-        }*/
+        }
+
         //Scaled to Frameimg
         for(Recognition recognition : recognitionList) {
             cropToFrameTransform.mapRect(recognition.getLocation());

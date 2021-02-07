@@ -97,10 +97,10 @@ public class Detector {
                 String label = labels.get((int) outputClasses[0][i] + 1);
                 System.out.println(label);
                 RectF location = new RectF(
-                        outputLocations[0][i][1]* imageSizeX,
-                        outputLocations[0][i][0]* imageSizeY,
-                        outputLocations[0][i][3]* imageSizeX,
-                        outputLocations[0][i][2]* imageSizeY
+                        outputLocations[0][i][1]* 1,
+                        outputLocations[0][i][0]* 1,
+                        outputLocations[0][i][3]* 1,
+                        outputLocations[0][i][2]* 1
                 );
 
                 recognitions.add(new Recognition(label, location, prob, bitmap.getHeight(),bitmap.getWidth()));
