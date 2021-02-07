@@ -5,8 +5,11 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Size;
 
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ImageUtils {
 
@@ -118,6 +121,15 @@ public class ImageUtils {
                 recognition.getLocationInt().bottom - recognition.getLocationInt().top);
     }
 
+    protected static List<Recognition> filteroutRecognitions(String[] classes, List<Recognition> recognitionList){
+        Set<String> classesSet = new HashSet<String>(Arrays.asList(classes));
+        for (Recognition recognition:recognitionList
+             ) {
+            if(!classesSet.contains(recognition.getLabel())) recognitionList.remove(recognition);
+        }
+        return recognitionList;
+    }
+
     protected static List<Recognition> mergeRecognitions(Bitmap bitmap, List<Recognition> recognitionList) {
         boolean flag = false;
         boolean ifModify;
@@ -153,6 +165,47 @@ public class ImageUtils {
         ) {
             Rect rect = recognition.getLocationInt();
             recognition.setLocationInt(extendBoundary(bitmap, rect));
+            recognition.setLabel("merged");
+            recognition.setProb(1);
+        }
+        return recognitionList;
+    }
+
+    protected static List<Recognition> mergeRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList) {
+        boolean flag = false;
+        boolean ifModify;
+        Rect rect1, rect2;
+
+        while (!flag) {
+            ifModify = false;
+            for (int i = recognitionList.size() - 1; i > 0; i--) {
+                rect1 = recognitionList.get(i).getLocationInt();
+                for (int j = i - 1; j > 0; j--) {
+                    rect2 = recognitionList.get(i).getLocationInt();
+
+                    if (calculateIOU(rect1, rect2) > 0.3) {
+                        recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
+                        recognitionList.remove(j);
+                        ifModify = true;
+                        break;
+                    }
+
+                    if (isNear(imgHeight,imgWidth, rect1, rect2)) {
+                        recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
+                        recognitionList.remove(j);
+                        ifModify = true;
+                        break;
+                    }
+
+                }
+                if (ifModify) break;
+            }
+            if (!ifModify) flag = true;
+        }
+        for (Recognition recognition : recognitionList
+        ) {
+            Rect rect = recognition.getLocationInt();
+            recognition.setLocationInt(extendBoundary(imgHeight,imgWidth, rect));
             recognition.setLabel("merged");
             recognition.setProb(1);
         }
@@ -201,15 +254,41 @@ public class ImageUtils {
         return false;
     }
 
+    private static boolean isNear(int imgHeight, int imgWidth, Rect rect1, Rect rect2) {
+        boolean xNear, yNear;
+        final float THRESHOLD = 0.1f;
+        if (isSmall(imgHeight,imgWidth, rect1) || isSmall(imgHeight,imgWidth, rect2)) {
+            xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
+                    < THRESHOLD * imgWidth + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
+            yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
+                    < THRESHOLD * imgHeight + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
+            return xNear && yNear;
+        }
+        return false;
+    }
+
     private static boolean isSmall(Bitmap bitmap, Rect rect) {
         return ((rect.bottom - rect.top) < 0.1 * bitmap.getHeight()
                 && (rect.right - rect.left) < 0.1 * bitmap.getWidth());
+    }
+
+    private static boolean isSmall(int imgHeight, int imgWidth, Rect rect) {
+        return ((rect.bottom - rect.top) < 0.1 * imgHeight
+                && (rect.right - rect.left) < 0.1 * imgWidth);
     }
 
     protected static List<Recognition> extendRecognitions(Bitmap bitmap, List<Recognition> recognitionList){
         for (Recognition recognition:recognitionList
              ) {
             recognition.setLocationInt(extendBoundary(bitmap,recognition.getLocationInt()));
+        }
+        return recognitionList;
+    }
+
+    protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList){
+        for (Recognition recognition:recognitionList
+        ) {
+            recognition.setLocationInt(extendBoundary(imgHeight, imgWidth,recognition.getLocationInt()));
         }
         return recognitionList;
     }
@@ -221,6 +300,14 @@ public class ImageUtils {
         rect.right = Math.min(bitmap.getWidth(), rect.right + EXTENSION);
         rect.bottom = Math.min(bitmap.getHeight(), rect.bottom + EXTENSION);
         return rect;
+    }
 
+    private static Rect extendBoundary(int imgHeight, int imgWidth, Rect rect) {
+        final int EXTENSION = 10;
+        rect.left = Math.max(0, rect.left - EXTENSION);
+        rect.top = Math.max(0, rect.top - EXTENSION);
+        rect.right = Math.min(imgWidth, rect.right + EXTENSION);
+        rect.bottom = Math.min(imgHeight, rect.bottom + EXTENSION);
+        return rect;
     }
 }

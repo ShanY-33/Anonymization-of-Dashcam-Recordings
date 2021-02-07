@@ -5,16 +5,19 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Imgprocess {
 
     private Bitmap frameBitmap;
+    private int previewHeight, previewWidth;
     private Bitmap scaledBitmap;
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
     private Matrix normToCropTransform;
-    private int previewHeight, previewWidth;
+
     private static final int SCALE_SIZE = 640;
 
     private Detector detector;
@@ -57,9 +60,13 @@ public class Imgprocess {
 
     protected void detectprocess(){
         overlayView.setImageBitmap(scaledBitmap);
-        List<Recognition> recognitionList = detector.detect(scaledBitmap);
-//        recognitionList = ImageUtils.mergeRecognitions(this.frameBitmap, recognitionList);
-//        recognitionList = ImageUtils.extendRecognitions(this.frameBitmap,recognitionList);
+        List<Recognition> recognitionList = detector.detect(scaledBitmap,frameBitmap);
+        String[] classes = {"person","car","bicycle","motorcycle","bus","truck"};
+        recognitionList = ImageUtils.filteroutRecognitions(classes, recognitionList);
+        recognitionList = ImageUtils.mergeRecognitions(this.previewHeight,this.previewWidth, recognitionList);
+        recognitionList = ImageUtils.extendRecognitions(this.previewHeight,this.previewWidth,recognitionList);
+
+
 
         System.out.println("Detection is finished");
 

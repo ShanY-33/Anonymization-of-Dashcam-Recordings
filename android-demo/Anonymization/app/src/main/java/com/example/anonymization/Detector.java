@@ -45,7 +45,7 @@ public class Detector {
         }
     }
 
-    public List<Recognition> detect(Bitmap bitmap) {
+    public List<Recognition> detect(Bitmap bitmap, Bitmap originalImg) {
         int[] intValues = new int[imageSizeX * imageSizeY];
         bitmap.getPixels(
                 intValues,
@@ -103,7 +103,7 @@ public class Detector {
                         outputLocations[0][i][2]* 1
                 );
 
-                recognitions.add(new Recognition(label, location, prob, bitmap.getHeight(),bitmap.getWidth()));
+                recognitions.add(new Recognition(label, location, prob, originalImg.getHeight(),originalImg.getWidth()));
             }
         }
 
