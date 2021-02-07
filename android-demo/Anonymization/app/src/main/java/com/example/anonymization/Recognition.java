@@ -8,10 +8,32 @@ public class Recognition {
     private RectF location;
     private float prob;
 
-    public Recognition(String label, RectF location, float prob) {
+    private Rect locationInt;
+    private final int imgHeight;
+    private final int imgWidth;
+
+    public Recognition(String label, RectF location, float prob, int imgHeight, int imgWidth) {
         this.label = label;
         this.location = location;
         this.prob = prob;
+        this.imgHeight = imgHeight;
+        this.imgWidth = imgWidth;
+        this.locationInt = new Rect(Math.round(location.left * imgWidth),
+                Math.round(location.top * imgHeight),
+                Math.round(location.right * imgWidth),
+                Math.round(location.bottom * imgHeight));
+    }
+
+    public Rect getLocationInt() {
+        return locationInt;
+    }
+
+    public int getImgHeight() {
+        return imgHeight;
+    }
+
+    public int getImgWidth() {
+        return imgWidth;
     }
 
     public String getLabel() {
@@ -28,6 +50,18 @@ public class Recognition {
 
     public void setLocation(RectF location) {
         this.location = location;
+        this.locationInt = new Rect(Math.round(location.left * imgWidth),
+                Math.round(location.top * imgHeight),
+                Math.round(location.right * imgWidth),
+                Math.round(location.bottom * imgHeight));
+    }
+
+    public void setLocationInt(Rect locationInt) {
+        this.locationInt = locationInt;
+        this.location = new RectF(locationInt.left / (float) imgWidth,
+                locationInt.top / (float) imgHeight,
+                locationInt.right / (float) imgWidth,
+                locationInt.bottom / (float) imgHeight);
     }
 
     public void setProb(float prob) {
@@ -37,6 +71,7 @@ public class Recognition {
     public float getProb() {
         return prob;
     }
+
 
     @Override
     public String toString() {

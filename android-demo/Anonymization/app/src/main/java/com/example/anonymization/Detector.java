@@ -103,7 +103,7 @@ public class Detector {
                         outputLocations[0][i][2]* imageSizeY
                 );
 
-                recognitions.add(new Recognition(label, location, prob));
+                recognitions.add(new Recognition(label, location, prob, bitmap.getHeight(),bitmap.getWidth()));
             }
         }
 
