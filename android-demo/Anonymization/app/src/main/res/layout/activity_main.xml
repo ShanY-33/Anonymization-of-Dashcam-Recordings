@@ -25,6 +25,7 @@
         android:layout_marginTop="5dp"
         android:id="@+id/btn_select"
         android:text="Load Image"
+        android:textColor="@color/white"
         android:textAllCaps="false"
         android:layout_width="100dp"
         android:layout_height="40dp"

@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.zhouwei.blurlibrary.EasyBlur;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(MainActivity.this, new
                             String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 } else {
-                    //打开系统相册
+                    //Open Gallery
                     openAlbum();
                 }
             }
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private void openAlbum() {
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
-        startActivityForResult(intent,1);//打开系统相册
+        startActivityForResult(intent,1);
 
     }
 
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         String imagePath = null;
         Uri uri = data.getData();
         if (DocumentsContract.isDocumentUri(this, uri)) {
-            //如果是document类型的uri，则通过document id处理
+            //If the type of uri is document, then use document id
             String docId = DocumentsContract.getDocumentId(uri);
             if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 String id = docId.split(":")[1];
@@ -94,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
                 imagePath = getImagePath(contentUri, null);
             }
         } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            //如果是content类型的uri，则使用普通方式处理
+            //If the type of uri is content, then use normal way
             imagePath = getImagePath(uri, null);
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            //如果是File类型的uri，直接获取图片路径即可
+            //If the type of uri is path, then use file path
             imagePath = uri.getPath();
         }
-        displayImage(imagePath);//根据图片路径显示图片
+        displayImage(imagePath);
 
     }
 
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getImagePath(Uri uri, String selection) {
         String path = null;
-        //通过uri和selection来获取真实的图片路径
+        //Get the full path of image
         Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -127,13 +126,11 @@ public class MainActivity extends AppCompatActivity {
     private void displayImage(String imagePath) {
         if (imagePath != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            //input_img.setVisibility(View.VISIBLE);
             input_img.setImageBitmap(bitmap);
             Detector detector1 = new Detector(this, "detect1.tflite", "labelmap1.txt", 0.3f);
             Detector detector2 = new Detector(this, "detect2.tflite", "labelmap2.txt",0.2f);
             output_img.setFramebitmap(bitmap);
             Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1, detector2);
-            //imgprocess.ScaleImg();
             imgprocess.detectprocess();
 
         } else {
