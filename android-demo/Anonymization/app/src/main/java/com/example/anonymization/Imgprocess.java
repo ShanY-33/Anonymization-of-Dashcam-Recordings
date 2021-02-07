@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,11 @@ public class Imgprocess {
         recognitionList = ImageUtils.filteroutRecognitions(classes, recognitionList);
         recognitionList = ImageUtils.mergeRecognitions(this.previewHeight,this.previewWidth, recognitionList);
         recognitionList = ImageUtils.extendRecognitions(this.previewHeight,this.previewWidth,recognitionList);
+        List<Bitmap> cropedBitmapsList = new ArrayList<>();
+        for (Recognition recognition:recognitionList
+             ) {
+            cropedBitmapsList.add(ImageUtils.cropImg(frameBitmap, recognition));
+        }
 
 
 
