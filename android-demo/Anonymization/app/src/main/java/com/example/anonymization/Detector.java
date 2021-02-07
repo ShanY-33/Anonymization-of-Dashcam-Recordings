@@ -70,12 +70,12 @@ public class Detector {
         for (int i = 0; i < imageSizeY; i++) {
             for (int j = 0; j < imageSizeX; j++) {
                 int pixelValue = intValues[i * imageSizeX + j];
-                /*
+                /*//quantized model
                 imgData.put((byte) ((pixelValue >> 16) & 0xFF));
                 imgData.put((byte) ((pixelValue >> 8) & 0xFF));
                 imgData.put((byte) (pixelValue & 0xFF));*/
 
-
+                //float model
                 imgData.putFloat((((pixelValue >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
                 imgData.putFloat((((pixelValue >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
                 imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
