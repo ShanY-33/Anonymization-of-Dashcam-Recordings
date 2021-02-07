@@ -123,9 +123,8 @@ public class ImageUtils {
 
     protected static List<Recognition> filteroutRecognitions(String[] classes, List<Recognition> recognitionList){
         Set<String> classesSet = new HashSet<String>(Arrays.asList(classes));
-        for (Recognition recognition:recognitionList
-             ) {
-            if(!classesSet.contains(recognition.getLabel())) recognitionList.remove(recognition);
+        for (int i = recognitionList.size()-1; i >0 ; i--) {
+            if(!classesSet.contains(recognitionList.get(i).getLabel())) recognitionList.remove(i);
         }
         return recognitionList;
     }
@@ -181,7 +180,7 @@ public class ImageUtils {
             for (int i = recognitionList.size() - 1; i > 0; i--) {
                 rect1 = recognitionList.get(i).getLocationInt();
                 for (int j = i - 1; j > 0; j--) {
-                    rect2 = recognitionList.get(i).getLocationInt();
+                    rect2 = recognitionList.get(j).getLocationInt();
 
                     if (calculateIOU(rect1, rect2) > 0.3) {
                         recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
@@ -202,13 +201,13 @@ public class ImageUtils {
             }
             if (!ifModify) flag = true;
         }
-        for (Recognition recognition : recognitionList
-        ) {
-            Rect rect = recognition.getLocationInt();
-            recognition.setLocationInt(extendBoundary(imgHeight,imgWidth, rect));
+
+        for (Recognition recognition:recognitionList
+             ) {
             recognition.setLabel("merged");
-            recognition.setProb(1);
+            recognition.setProb(1.0f);
         }
+
         return recognitionList;
     }
 
@@ -285,10 +284,10 @@ public class ImageUtils {
         return recognitionList;
     }
 
-    protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList){
+    protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList,int EXTENSION){
         for (Recognition recognition:recognitionList
         ) {
-            recognition.setLocationInt(extendBoundary(imgHeight, imgWidth,recognition.getLocationInt()));
+            recognition.setLocationInt(extendBoundary(imgHeight, imgWidth,recognition.getLocationInt(),EXTENSION));
         }
         return recognitionList;
     }
@@ -302,12 +301,22 @@ public class ImageUtils {
         return rect;
     }
 
-    private static Rect extendBoundary(int imgHeight, int imgWidth, Rect rect) {
-        final int EXTENSION = 10;
+    private static Rect extendBoundary(int imgHeight, int imgWidth, Rect rect, int EXTENSION) {
         rect.left = Math.max(0, rect.left - EXTENSION);
         rect.top = Math.max(0, rect.top - EXTENSION);
         rect.right = Math.min(imgWidth, rect.right + EXTENSION);
         rect.bottom = Math.min(imgHeight, rect.bottom + EXTENSION);
         return rect;
+    }
+
+    protected static Recognition convertRecognitiontoOriginalImg(Recognition recognition, Recognition recognitionSmall){
+        Rect newLocationInt = new Rect(recognition.getLocationInt().left + recognitionSmall.getLocationInt().left,
+                recognition.getLocationInt().top + recognitionSmall.getLocationInt().top,
+                recognition.getLocationInt().left + recognitionSmall.getLocationInt().right,
+                recognition.getLocationInt().top + recognitionSmall.getLocationInt().bottom);
+        recognitionSmall.setImgHeight(recognition.getImgHeight());
+        recognitionSmall.setImgWidth(recognition.getImgWidth());
+        recognitionSmall.setLocationInt(newLocationInt);
+        return  recognitionSmall;
     }
 }

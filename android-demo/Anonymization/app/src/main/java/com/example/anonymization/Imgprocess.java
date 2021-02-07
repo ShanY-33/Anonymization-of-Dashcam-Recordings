@@ -65,13 +65,13 @@ public class Imgprocess {
 
     protected void detectprocess(){
         ScaleImg(frameBitmap, scaledBitmap, frameToCropTransform);
-        overlayView.setImageBitmap(scaledBitmap);
+        overlayView.setImageBitmap(frameBitmap);
         List<Recognition> recognitionList1 = detector1.detect(scaledBitmap,frameBitmap);
 
         String[] classes = {"person","car","bicycle","motorcycle","bus","truck"};
         recognitionList1 = ImageUtils.filteroutRecognitions(classes, recognitionList1);
         recognitionList1 = ImageUtils.mergeRecognitions(this.previewHeight,this.previewWidth, recognitionList1);
-        recognitionList1 = ImageUtils.extendRecognitions(this.previewHeight,this.previewWidth,recognitionList1);
+        recognitionList1 = ImageUtils.extendRecognitions(this.previewHeight,this.previewWidth,recognitionList1,10);
 
         List<Bitmap> cropedBitmapsList = new ArrayList<>();
         for (Recognition recognition:recognitionList1
@@ -94,29 +94,35 @@ public class Imgprocess {
             scaledCropedBitmapsList.add(scaledBitmap2);
         }
 
-        List<Recognition> recognitionList2 = new ArrayList<>();
+        List<List<Recognition>> recognitionListList = new ArrayList<>();
         for (int i = 0; i < scaledCropedBitmapsList.size(); i++) {
-            recognitionList2.addAll(detector2.detect(scaledCropedBitmapsList.get(i), cropedBitmapsList.get(i)));
+            recognitionListList.add(detector2.detect(scaledCropedBitmapsList.get(i), cropedBitmapsList.get(i)));
         }
-        
-        
 
-
+        List<Recognition> recognitionList2 = new ArrayList<>();
+        for (int i = 0; i < recognitionListList.size(); i++) {
+            for (int j = 0; j < recognitionListList.get(i).size(); j++) {
+                Recognition tmpRecognition;
+                tmpRecognition = ImageUtils.convertRecognitiontoOriginalImg(recognitionList1.get(i), recognitionListList.get(i).get(j));
+                recognitionList2.add(tmpRecognition);
+            }
+        }
 
 
         System.out.println("Detection is finished");
 
+
         //Normolized to Scaled
-        for(Recognition recognition : recognitionList1) {
+        for(Recognition recognition : recognitionList2) {
             normToCropTransform.mapRect(recognition.getLocation());
         }
 
         //Scaled to Frameimg
-        for(Recognition recognition : recognitionList1) {
+        for(Recognition recognition : recognitionList2) {
             cropToFrameTransform.mapRect(recognition.getLocation());
         }
 
-        overlayView.setRecognitions(recognitionList1);
+        overlayView.setRecognitions(recognitionList2);
         overlayView.postInvalidate();
     }
 

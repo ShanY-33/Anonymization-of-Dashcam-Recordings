@@ -9,8 +9,8 @@ public class Recognition {
     private float prob;
 
     private Rect locationInt;
-    private final int imgHeight;
-    private final int imgWidth;
+    private int imgHeight;
+    private int imgWidth;
 
     public Recognition(String label, RectF location, float prob, int imgHeight, int imgWidth) {
         this.label = label;
@@ -72,6 +72,13 @@ public class Recognition {
         return prob;
     }
 
+    public void setImgHeight(int imgHeight) {
+        this.imgHeight = imgHeight;
+    }
+
+    public void setImgWidth(int imgWidth) {
+        this.imgWidth = imgWidth;
+    }
 
     @Override
     public String toString() {
