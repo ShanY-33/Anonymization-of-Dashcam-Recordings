@@ -1,3 +1,9 @@
+/* Load image from Gallery part is based on:
+https://blog.csdn.net/yao_94/article/details/79447359；
+The whole detection process is based on: ObjectDetectorTutorial
+https://github.com/William-Yin123/ObjectDetector
+ */
+
 package com.example.anonymization;
 
 import android.content.Context;
