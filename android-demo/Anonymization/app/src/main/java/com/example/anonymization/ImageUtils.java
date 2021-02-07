@@ -114,6 +114,12 @@ public class ImageUtils {
         return 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
     }
 
+    /**
+     *
+     * @param bitmap
+     * @param recognition
+     * @return
+     */
     protected static Bitmap cropImg(Bitmap bitmap, Recognition recognition) {
         return Bitmap.createBitmap(bitmap, recognition.getLocationInt().left,
                 recognition.getLocationInt().top,
@@ -121,6 +127,12 @@ public class ImageUtils {
                 recognition.getLocationInt().bottom - recognition.getLocationInt().top);
     }
 
+    /**
+     *
+     * @param classes
+     * @param recognitionList
+     * @return
+     */
     protected static List<Recognition> filteroutRecognitions(String[] classes, List<Recognition> recognitionList){
         Set<String> classesSet = new HashSet<String>(Arrays.asList(classes));
         //System.out.println(classesSet.size());
@@ -130,47 +142,13 @@ public class ImageUtils {
         return recognitionList;
     }
 
-    protected static List<Recognition> mergeRecognitions(Bitmap bitmap, List<Recognition> recognitionList) {
-        boolean flag = false;
-        boolean ifModify;
-        Rect rect1, rect2;
-
-        while (!flag) {
-            ifModify = false;
-            for (int i = recognitionList.size() - 1; i > 0; i--) {
-                rect1 = recognitionList.get(i).getLocationInt();
-                for (int j = i - 1; j > 0; j--) {
-                    rect2 = recognitionList.get(i).getLocationInt();
-
-                    if (calculateIOU(rect1, rect2) > 0.3) {
-                        recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
-                        recognitionList.remove(j);
-                        ifModify = true;
-                        break;
-                    }
-
-                    if (isNear(bitmap, rect1, rect2)) {
-                        recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
-                        recognitionList.remove(j);
-                        ifModify = true;
-                        break;
-                    }
-
-                }
-                if (ifModify) break;
-            }
-            if (!ifModify) flag = true;
-        }
-        for (Recognition recognition : recognitionList
-        ) {
-            Rect rect = recognition.getLocationInt();
-            recognition.setLocationInt(extendBoundary(bitmap, rect));
-            recognition.setLabel("merged");
-            recognition.setProb(1);
-        }
-        return recognitionList;
-    }
-
+    /**
+     *
+     * @param imgHeight
+     * @param imgWidth
+     * @param recognitionList
+     * @return
+     */
     protected static List<Recognition> mergeRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList) {
         boolean flag = false;
         boolean ifModify;
@@ -241,19 +219,6 @@ public class ImageUtils {
         }
     }
 
-    private static boolean isNear(Bitmap bitmap, Rect rect1, Rect rect2) {
-        boolean xNear, yNear;
-        final float THRESHOLD = 0.1f;
-        if (isSmall(bitmap, rect1) || isSmall(bitmap, rect2)) {
-            xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
-                    < THRESHOLD * bitmap.getHeight() + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
-            yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
-                    < THRESHOLD * bitmap.getHeight() + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
-            return xNear && yNear;
-        }
-        return false;
-    }
-
     private static boolean isNear(int imgHeight, int imgWidth, Rect rect1, Rect rect2) {
         boolean xNear, yNear;
         final float THRESHOLD = 0.1f;
@@ -267,24 +232,19 @@ public class ImageUtils {
         return false;
     }
 
-    private static boolean isSmall(Bitmap bitmap, Rect rect) {
-        return ((rect.bottom - rect.top) < 0.1 * bitmap.getHeight()
-                && (rect.right - rect.left) < 0.1 * bitmap.getWidth());
-    }
-
     private static boolean isSmall(int imgHeight, int imgWidth, Rect rect) {
         return ((rect.bottom - rect.top) < 0.1 * imgHeight
                 && (rect.right - rect.left) < 0.1 * imgWidth);
     }
 
-    protected static List<Recognition> extendRecognitions(Bitmap bitmap, List<Recognition> recognitionList){
-        for (Recognition recognition:recognitionList
-             ) {
-            recognition.setLocationInt(extendBoundary(bitmap,recognition.getLocationInt()));
-        }
-        return recognitionList;
-    }
-
+    /**
+     *
+     * @param imgHeight
+     * @param imgWidth
+     * @param recognitionList
+     * @param EXTENSION
+     * @return
+     */
     protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList,int EXTENSION){
         for (Recognition recognition:recognitionList
         ) {
@@ -293,14 +253,6 @@ public class ImageUtils {
         return recognitionList;
     }
 
-    private static Rect extendBoundary(Bitmap bitmap, Rect rect) {
-        final int EXTENSION = 10;
-        rect.left = Math.max(0, rect.left - EXTENSION);
-        rect.top = Math.max(0, rect.top - EXTENSION);
-        rect.right = Math.min(bitmap.getWidth(), rect.right + EXTENSION);
-        rect.bottom = Math.min(bitmap.getHeight(), rect.bottom + EXTENSION);
-        return rect;
-    }
 
     private static Rect extendBoundary(int imgHeight, int imgWidth, Rect rect, int EXTENSION) {
         rect.left = Math.max(0, rect.left - EXTENSION);
@@ -310,6 +262,12 @@ public class ImageUtils {
         return rect;
     }
 
+    /**
+     *
+     * @param recognition
+     * @param recognitionSmall
+     * @return
+     */
     protected static Recognition convertRecognitiontoOriginalImg(Recognition recognition, Recognition recognitionSmall){
         Rect newLocationInt = new Rect(recognition.getLocationInt().left + recognitionSmall.getLocationInt().left,
                 recognition.getLocationInt().top + recognitionSmall.getLocationInt().top,
