@@ -125,9 +125,10 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             //input_img.setVisibility(View.VISIBLE);
             input_img.setImageBitmap(bitmap);
-            Detector detector = new Detector(this);
+            Detector detector1 = new Detector(this, "detect1.tflite", "labelmap.txt");
+            Detector detector2 = new Detector(this, "detect1.tflite", "labelmap.txt");
             output_img.setFramebitmap(bitmap);
-            Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector);
+            Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1,detector2);
             imgprocess.ScaleImg();
             imgprocess.detectprocess();
 

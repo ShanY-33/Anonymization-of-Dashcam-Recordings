@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Detector {
-    public static final String MODEL_PATH = "detect1.tflite";
-    public static final String LABEL_PATH = "labelmap.txt";
+    public final String MODEL_PATH;
+    public final String LABEL_PATH;
     private static final float IMAGE_MEAN = 127.5f;
     private static final float IMAGE_STD = 127.5f;
     private static final int NUM_DETECTIONS = 10;
@@ -29,8 +29,10 @@ public class Detector {
     private final int imageSizeY;
     private List<String> labels;
 
-    public Detector(Context context) {
+    public Detector(Context context, String MODEL_PATH, String LABEL_PATH) {
         try {
+            this.MODEL_PATH = MODEL_PATH;
+            this.LABEL_PATH = LABEL_PATH;
             labels = FileUtil.loadLabels(context, LABEL_PATH);
             tflite = new Interpreter(FileUtil.loadMappedFile(context, MODEL_PATH));
 
