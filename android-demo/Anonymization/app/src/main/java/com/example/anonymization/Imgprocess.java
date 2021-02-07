@@ -61,7 +61,7 @@ public class Imgprocess {
     }
 
     protected void detectprocess(){
-        overlayView.setImageBitmap(scaledBitmap);
+        overlayView.setImageBitmap(frameBitmap);
         List<Recognition> recognitionList = detector1.detect(scaledBitmap,frameBitmap);
         String[] classes = {"person","car","bicycle","motorcycle","bus","truck"};
         recognitionList = ImageUtils.filteroutRecognitions(classes, recognitionList);
