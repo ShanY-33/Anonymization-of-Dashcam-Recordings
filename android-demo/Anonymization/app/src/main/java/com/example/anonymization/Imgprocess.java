@@ -64,7 +64,7 @@ public class Imgprocess {
         System.out.println("Detection is finished");
 
         //Normolized to Scaled
-        for(Recognition recognition : recognitions) {
+        for(Recognition recognition : recognitionList) {
             normToCropTransform.mapRect(recognition.getLocation());
         }
 
