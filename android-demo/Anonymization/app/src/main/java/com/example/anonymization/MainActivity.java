@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.zhouwei.blurlibrary.EasyBlur;
 
 public class MainActivity extends AppCompatActivity {
 
