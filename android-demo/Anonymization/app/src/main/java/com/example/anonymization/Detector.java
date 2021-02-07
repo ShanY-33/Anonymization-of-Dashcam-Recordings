@@ -20,19 +20,22 @@ import java.util.Map;
 public class Detector {
     public final String MODEL_PATH;
     public final String LABEL_PATH;
+    private final float THRESHOLD;
     private static final float IMAGE_MEAN = 127.5f;
     private static final float IMAGE_STD = 127.5f;
     private static final int NUM_DETECTIONS = 10;
+
 
     private final Interpreter tflite;
     private final int imageSizeX;
     private final int imageSizeY;
     private List<String> labels;
 
-    public Detector(Context context, String MODEL_PATH, String LABEL_PATH) {
+    public Detector(Context context, String MODEL_PATH, String LABEL_PATH, float THRESHOLD) {
         try {
             this.MODEL_PATH = MODEL_PATH;
             this.LABEL_PATH = LABEL_PATH;
+            this.THRESHOLD = THRESHOLD;
             labels = FileUtil.loadLabels(context, LABEL_PATH);
             tflite = new Interpreter(FileUtil.loadMappedFile(context, MODEL_PATH));
 
@@ -95,17 +98,17 @@ public class Detector {
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {
             float prob = outputScores[0][i];
-            if (prob > 0.5) {
+            if (prob > this.THRESHOLD) {
                 String label = labels.get((int) outputClasses[0][i] + 1);
                 System.out.println(label);
                 RectF location = new RectF(
-                        outputLocations[0][i][1]* 1,
-                        outputLocations[0][i][0]* 1,
-                        outputLocations[0][i][3]* 1,
-                        outputLocations[0][i][2]* 1
+                        outputLocations[0][i][1] * 1,
+                        outputLocations[0][i][0] * 1,
+                        outputLocations[0][i][3] * 1,
+                        outputLocations[0][i][2] * 1
                 );
 
-                recognitions.add(new Recognition(label, location, prob, originalImg.getHeight(),originalImg.getWidth()));
+                recognitions.add(new Recognition(label, location, prob, originalImg.getHeight(), originalImg.getWidth()));
             }
         }
 
