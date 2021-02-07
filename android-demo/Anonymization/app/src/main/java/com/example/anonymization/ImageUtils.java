@@ -130,7 +130,7 @@ public class ImageUtils {
                 for (int j = i - 1; j > 0; j--) {
                     rect2 = recognitionList.get(i).getLocationInt();
 
-                    if (calculateIOU(bitmap, rect1, rect2) > 0.3) {
+                    if (calculateIOU(rect1, rect2) > 0.3) {
                         recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
                         recognitionList.remove(j);
                         ifModify = true;
@@ -169,7 +169,7 @@ public class ImageUtils {
 
     }
 
-    private static float calculateIOU(Bitmap bitmap, Rect rect1, Rect rect2) {
+    private static float calculateIOU(Rect rect1, Rect rect2) {
         float IOU;
         int width1 = rect1.right - rect1.left, width2 = rect2.right - rect2.left;
         int height1 = rect1.bottom - rect1.top, height2 = rect2.bottom - rect2.top;
@@ -183,7 +183,7 @@ public class ImageUtils {
             overlapHeight = Math.abs(Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
             overlapArea = overlapHeight * overlapWidth;
             totalArea = width1 * height1 + width2 * height2;
-            IOU = overlapArea / (totalArea - overlapArea);
+            IOU = overlapArea / (float)(totalArea - overlapArea);
             return IOU;
         }
     }
@@ -206,7 +206,15 @@ public class ImageUtils {
                 && (rect.right - rect.left) < 0.1 * bitmap.getWidth());
     }
 
-    protected static Rect extendBoundary(Bitmap bitmap, Rect rect) {
+    protected static List<Recognition> extendRecognitions(Bitmap bitmap, List<Recognition> recognitionList){
+        for (Recognition recognition:recognitionList
+             ) {
+            recognition.setLocationInt(extendBoundary(bitmap,recognition.getLocationInt()));
+        }
+        return recognitionList;
+    }
+
+    private static Rect extendBoundary(Bitmap bitmap, Rect rect) {
         final int EXTENSION = 10;
         rect.left = Math.max(0, rect.left - EXTENSION);
         rect.top = Math.max(0, rect.top - EXTENSION);

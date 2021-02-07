@@ -57,7 +57,10 @@ public class Imgprocess {
 
     protected void detectprocess(){
         overlayView.setImageBitmap(scaledBitmap);
-        List<Recognition> recognitions = detector.detect(scaledBitmap);
+        List<Recognition> recognitionList = detector.detect(scaledBitmap);
+//        recognitionList = ImageUtils.mergeRecognitions(this.frameBitmap, recognitionList);
+//        recognitionList = ImageUtils.extendRecognitions(this.frameBitmap,recognitionList);
+
         System.out.println("Detection is finished");
         /*
         //Normolized to Scaled
@@ -65,11 +68,11 @@ public class Imgprocess {
             normToCropTransform.mapRect(recognition.getLocation());
         }*/
         //Scaled to Frameimg
-        for(Recognition recognition : recognitions) {
+        for(Recognition recognition : recognitionList) {
             cropToFrameTransform.mapRect(recognition.getLocation());
         }
 
-        overlayView.setRecognitions(recognitions);
+        overlayView.setRecognitions(recognitionList);
         overlayView.postInvalidate();
     }
 
