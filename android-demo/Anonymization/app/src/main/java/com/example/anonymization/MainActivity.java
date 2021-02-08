@@ -20,11 +20,13 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.renderscript.RenderScript;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView input_img;
     private OverlayView output_img;
     private Bitmap srcBitmap;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,10 +138,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gotoDetectionProcess(Bitmap bitmap){
+        long timeStamp0 = System.currentTimeMillis();
         Detector detector1 = new Detector(this, "detect1.tflite", "labelmap1.txt", 0.3f);
         Detector detector2 = new Detector(this, "detect2.tflite", "labelmap2.txt",0.2f);
+        Calendar c = Calendar.getInstance();
+        long timeStamp1 = System.currentTimeMillis();
         output_img.setFramebitmap(bitmap);
         Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1, detector2);
         imgprocess.detectprocess();
+        long timeStamp2 = System.currentTimeMillis();
+        long time1 = timeStamp1 - timeStamp0;
+        long time2 = timeStamp2 - timeStamp1;
+        Log.d("load model",":" + time1);
+        Log.d("process",":" + time2);
     }
 }

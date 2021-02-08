@@ -80,7 +80,8 @@ public class Detector {
         for (int i = 0; i < imageSizeY; i++) {
             for (int j = 0; j < imageSizeX; j++) {
                 int pixelValue = intValues[i * imageSizeX + j];
-                /*//quantized model
+                /*
+                //quantized model
                 imgData.put((byte) ((pixelValue >> 16) & 0xFF));
                 imgData.put((byte) ((pixelValue >> 8) & 0xFF));
                 imgData.put((byte) (pixelValue & 0xFF));*/
@@ -103,8 +104,11 @@ public class Detector {
         outputMap.put(1, outputClasses);
         outputMap.put(2, outputScores);
         outputMap.put(3, numDetections);
-
+        long timeStamp0 = System.currentTimeMillis();
         tflite.runForMultipleInputsOutputs(inputArray, outputMap);
+        long timeStamp1 = System.currentTimeMillis();
+        long time = timeStamp1 - timeStamp0;
+        Log.d("detection", " "+time);
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {
             float prob = outputScores[0][i];
