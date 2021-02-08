@@ -36,12 +36,14 @@ public class Detector {
     private final int imageSizeX;
     private final int imageSizeY;
     private List<String> labels;
+    boolean quantized;
 
-    public Detector(Context context, String MODEL_PATH, String LABEL_PATH, float THRESHOLD) {
+    public Detector(Context context, String MODEL_PATH, String LABEL_PATH, float THRESHOLD, boolean quantized) {
         try {
             this.MODEL_PATH = MODEL_PATH;
             this.LABEL_PATH = LABEL_PATH;
             this.THRESHOLD = THRESHOLD;
+            this.quantized = quantized;
             labels = FileUtil.loadLabels(context, LABEL_PATH);
             tflite = new Interpreter(FileUtil.loadMappedFile(context, MODEL_PATH));
 
@@ -68,11 +70,12 @@ public class Detector {
                 bitmap.getHeight()
         );
 
-
-        /*//quantized model
-        int numBytesPerChannel = 1;*/
+        int numBytesPerChannel;
+        //quantized model
+        if(this.quantized) numBytesPerChannel = 1;
         //float model
-        int numBytesPerChannel = 4;
+        else numBytesPerChannel = 4;
+
         ByteBuffer imgData = ByteBuffer.allocateDirect(
                 1 * imageSizeX * imageSizeY * 3 * numBytesPerChannel);
         imgData.order(ByteOrder.nativeOrder());
@@ -80,16 +83,18 @@ public class Detector {
         for (int i = 0; i < imageSizeY; i++) {
             for (int j = 0; j < imageSizeX; j++) {
                 int pixelValue = intValues[i * imageSizeX + j];
-                /*
-                //quantized model
-                imgData.put((byte) ((pixelValue >> 16) & 0xFF));
-                imgData.put((byte) ((pixelValue >> 8) & 0xFF));
-                imgData.put((byte) (pixelValue & 0xFF));*/
 
-                //float model
-                imgData.putFloat((((pixelValue >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
-                imgData.putFloat((((pixelValue >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
-                imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
+                if(this.quantized){
+                    //quantized model
+                    imgData.put((byte) ((pixelValue >> 16) & 0xFF));
+                    imgData.put((byte) ((pixelValue >> 8) & 0xFF));
+                    imgData.put((byte) (pixelValue & 0xFF));
+                }else{
+                    //float model
+                    imgData.putFloat((((pixelValue >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
+                    imgData.putFloat((((pixelValue >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
+                    imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
+                }
             }
         }
 
@@ -104,11 +109,14 @@ public class Detector {
         outputMap.put(1, outputClasses);
         outputMap.put(2, outputScores);
         outputMap.put(3, numDetections);
+        tflite.runForMultipleInputsOutputs(inputArray, outputMap);
+        /*
         long timeStamp0 = System.currentTimeMillis();
         tflite.runForMultipleInputsOutputs(inputArray, outputMap);
         long timeStamp1 = System.currentTimeMillis();
         long time = timeStamp1 - timeStamp0;
         Log.d("detection", " "+time);
+        */
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {
             float prob = outputScores[0][i];

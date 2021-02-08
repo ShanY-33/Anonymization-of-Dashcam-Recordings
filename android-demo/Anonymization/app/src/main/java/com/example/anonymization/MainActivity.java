@@ -139,9 +139,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void gotoDetectionProcess(Bitmap bitmap){
         long timeStamp0 = System.currentTimeMillis();
-        Detector detector1 = new Detector(this, "detect1.tflite", "labelmap1.txt", 0.3f);
-        Detector detector2 = new Detector(this, "detect2.tflite", "labelmap2.txt",0.2f);
-        Calendar c = Calendar.getInstance();
+        Detector detector1 = new Detector(this, "detect1.tflite", "labelmap1.txt", 0.3f, false);
+        Detector detector2 = new Detector(this, "detect2.tflite", "labelmap2.txt",0.2f, false);
         long timeStamp1 = System.currentTimeMillis();
         output_img.setFramebitmap(bitmap);
         Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1, detector2);
