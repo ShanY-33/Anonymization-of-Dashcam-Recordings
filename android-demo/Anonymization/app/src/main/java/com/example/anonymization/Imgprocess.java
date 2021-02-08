@@ -65,7 +65,6 @@ public class Imgprocess {
 
     protected void detectprocess(){
         ScaleImg(frameBitmap, scaledBitmap, frameToCropTransform);
-        overlayView.setImageBitmap(frameBitmap);
         List<Recognition> recognitionList1 = detector1.detect(scaledBitmap,frameBitmap);
 
         String[] classes = {"person","car","bicycle","motorcycle","bus","truck"};
@@ -126,6 +125,7 @@ public class Imgprocess {
         }
 
         overlayView.setRecognitions(recognitionList2);
+        overlayView.setImageBitmap(frameBitmap);
         overlayView.postInvalidate();
     }
 

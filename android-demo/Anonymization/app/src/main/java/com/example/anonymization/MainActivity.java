@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn;
     private ImageView input_img;
     private OverlayView output_img;
+    private Bitmap srcBitmap;
 
 
     @Override
@@ -126,15 +127,20 @@ public class MainActivity extends AppCompatActivity {
     private void displayImage(String imagePath) {
         if (imagePath != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            this.srcBitmap = bitmap;
             input_img.setImageBitmap(bitmap);
-            Detector detector1 = new Detector(this, "detect1.tflite", "labelmap1.txt", 0.3f);
-            Detector detector2 = new Detector(this, "detect2.tflite", "labelmap2.txt",0.2f);
-            output_img.setFramebitmap(bitmap);
-            Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1, detector2);
-            imgprocess.detectprocess();
 
         } else {
             Toast.makeText(this, "failed to get image", Toast.LENGTH_SHORT).show();
         }
+        gotoDetectionProcess(this.srcBitmap);
+    }
+
+    private void gotoDetectionProcess(Bitmap bitmap){
+        Detector detector1 = new Detector(this, "detect1.tflite", "labelmap1.txt", 0.3f);
+        Detector detector2 = new Detector(this, "detect2.tflite", "labelmap2.txt",0.2f);
+        output_img.setFramebitmap(bitmap);
+        Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1, detector2);
+        imgprocess.detectprocess();
     }
 }
