@@ -1,6 +1,6 @@
 # Android Sample Code
 
-<img src="../img/android-demo.gif" width="100%">
+<img src="../img/android-demo.gif" width="30%">
 
 ## Overview
 * `detect.py` runs mdoel against given image and generates anonymized image
