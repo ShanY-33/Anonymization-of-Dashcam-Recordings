@@ -5,7 +5,7 @@ In order to be able to use these images in research projects without hesitation,
 
 ## Architecture
 The repository is split up into these directories:
-
+* `android-demo/` android demo code
 * `python-demo/` python code for anonymization
 * `orga/` slides of each milestone and final paper
 * `model/` trained SSD Mobilenet model
