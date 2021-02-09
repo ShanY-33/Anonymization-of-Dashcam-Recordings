@@ -1,4 +1,4 @@
-# Demo Code
+# Python Demo Code
 
 ## Overview
 * `detect.py` runs mdoel against given image and generates anonymized image
