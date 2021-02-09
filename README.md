@@ -1,3 +1,4 @@
+
 # Anonymization of Dashcam Recordings
 
 ## Introduction
@@ -6,8 +7,7 @@ In order to be able to use these images in research projects without hesitation,
 ## Architecture
 The repository is split up into these directories:
 * `android-demo/` android demo code
-* `python-demo/` python code for anonymization
-* `orga/` slides of each milestone and final paper
+* `python-demo/` python demo code
 * `model/` trained SSD Mobilenet model
 
 For more information about each directory, please consult the corresponding readme found in each directory.
@@ -28,7 +28,6 @@ The code follows the steps given below:
 
 
 ## Results
-You can find project report [here](./UserGuide.md).
 <img src="img/rst1.jpg" width="100%">
 <img src="img/rst2.jpg" width="100%">
 <img src="img/rst3.jpg" width="100%">

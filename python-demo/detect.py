@@ -67,7 +67,7 @@ def anonymization_process(model_car_person_dir,
             else:
                 utils.save_load.save_image(input_img.image_np, name, output_dir + 'face_license/')
             # save box data as .txt for evaluation
-            utils.save_load.save_detection_result(input_img, name, output_dir + 'box_position/')
+            utils.save_load.save_detection_result(input_img, name, output_dir + 'box_location/')
 
         # save anonymiazed results
         utils.save_load.save_image(blurred_img, name, output_dir + 'anonymized/')
