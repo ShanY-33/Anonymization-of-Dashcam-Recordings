@@ -110,13 +110,13 @@ public class Detector {
         outputMap.put(2, outputScores);
         outputMap.put(3, numDetections);
         tflite.runForMultipleInputsOutputs(inputArray, outputMap);
-        /*
-        long timeStamp0 = System.currentTimeMillis();
-        tflite.runForMultipleInputsOutputs(inputArray, outputMap);
-        long timeStamp1 = System.currentTimeMillis();
-        long time = timeStamp1 - timeStamp0;
-        Log.d("detection", " "+time);
-        */
+
+//        long timeStamp0 = System.currentTimeMillis();
+//        tflite.runForMultipleInputsOutputs(inputArray, outputMap);
+//        long timeStamp1 = System.currentTimeMillis();
+//        long time = timeStamp1 - timeStamp0;
+//        Log.d("detection time cost", " "+time+" ms");
+
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {
             float prob = outputScores[0][i];
