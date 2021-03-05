@@ -21,7 +21,7 @@ public class Imgprocess {
     private Matrix normToCropTransform;
     private Matrix cropToScaledCropTransform;
 
-    private static final int SCALE_SIZE1 = 640, SCALE_SIZE2 = 300;
+    private static final int SCALE_SIZE1 = 300, SCALE_SIZE2 = 300;
 
     private Detector detector1,detector2;
     private OverlayView overlayView;

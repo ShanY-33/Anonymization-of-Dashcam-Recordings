@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void gotoDetectionProcess(Bitmap bitmap){
         long timeStamp0 = System.currentTimeMillis();
-        Detector detector1 = new Detector(this, "ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03.tflite", "labelmap1.txt", 0.3f, false);
+        Detector detector1 = new Detector(this, "ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync_2018_07_03.tflite", "labelmap1.txt", 0.3f, false);
         Detector detector2 = new Detector(this, "face_license2.tflite", "labelmap2.txt",0.2f, false);
         long timeStamp1 = System.currentTimeMillis();
         output_img.setFramebitmap(bitmap);
