@@ -1,4 +1,3 @@
-
 # Anonymization of Dashcam Recordings
 
 ## Introduction
@@ -8,9 +7,16 @@ In order to be able to use these images in research projects without hesitation,
 The repository is split up into these directories:
 * `android-demo/` android demo code
 * `python-demo/` python demo code
-* `model/` trained SSD Mobilenet model
 
 For more information about each directory, please consult the corresponding readme found in each directory.
+
+## Model
+Models can be downloaded google link!!![here](aaa). Each model contains:
+* config and checkpoint file
+* saved model for TensorFlow
+* .tflite model for TFLite
+
+The necessary model has been included in the repository, so the download is not required.
 
 ## Approach
 The code follows the steps given below:
