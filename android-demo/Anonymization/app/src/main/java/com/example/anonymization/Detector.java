@@ -1,9 +1,3 @@
-/* Load image from Gallery part is based on:
-https://blog.csdn.net/yao_94/article/details/79447359；
-The whole detection process is based on: ObjectDetectorTutorial
-https://github.com/William-Yin123/ObjectDetector
- */
-
 package com.example.anonymization;
 
 import android.content.Context;
@@ -71,9 +65,8 @@ public class Detector {
         );
 
         int numBytesPerChannel;
-        //quantized model
-        if(this.quantized) numBytesPerChannel = 1;
-        //float model
+        // different value depends on whether the tflite model is quantized or not
+        if (this.quantized) numBytesPerChannel = 1;
         else numBytesPerChannel = 4;
 
         ByteBuffer imgData = ByteBuffer.allocateDirect(
@@ -84,13 +77,12 @@ public class Detector {
             for (int j = 0; j < imageSizeX; j++) {
                 int pixelValue = intValues[i * imageSizeX + j];
 
-                if(this.quantized){
-                    //quantized model
+                // different operation depends on whether the tflite model is quantized or not
+                if (this.quantized) {
                     imgData.put((byte) ((pixelValue >> 16) & 0xFF));
                     imgData.put((byte) ((pixelValue >> 8) & 0xFF));
                     imgData.put((byte) (pixelValue & 0xFF));
-                }else{
-                    //float model
+                } else {
                     imgData.putFloat((((pixelValue >> 16) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
                     imgData.putFloat((((pixelValue >> 8) & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
                     imgData.putFloat(((pixelValue & 0xFF) - IMAGE_MEAN) / IMAGE_STD);
@@ -109,13 +101,17 @@ public class Detector {
         outputMap.put(1, outputClasses);
         outputMap.put(2, outputScores);
         outputMap.put(3, numDetections);
-        tflite.runForMultipleInputsOutputs(inputArray, outputMap);
 
-//        long timeStamp0 = System.currentTimeMillis();
-//        tflite.runForMultipleInputsOutputs(inputArray, outputMap);
-//        long timeStamp1 = System.currentTimeMillis();
-//        long time = timeStamp1 - timeStamp0;
-//        Log.d("detection time cost", " "+time+" ms");
+        // get runtime of each detection
+        /*
+        long timeStamp0 = System.currentTimeMillis();
+        */
+        tflite.runForMultipleInputsOutputs(inputArray, outputMap);
+        /*
+        long timeStamp1 = System.currentTimeMillis();
+        long time = timeStamp1 - timeStamp0;
+        Log.d("detection time cost", " "+time+" ms");
+        */
 
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {

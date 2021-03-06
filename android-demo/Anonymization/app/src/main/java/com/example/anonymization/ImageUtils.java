@@ -1,4 +1,4 @@
-/* Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+/** Copyright 2019 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class ImageUtils {
         final int inWidth = transpose ? srcHeight : srcWidth;
         final int inHeight = transpose ? srcWidth : srcHeight;
 
-        // Apply scaling if necessary.
+        /** Apply scaling if necessary.*/
         if (inWidth != dstWidth || inHeight != dstHeight) {
             final float scaleFactorX = dstWidth / (float) inWidth;
             final float scaleFactorY = dstHeight / (float) inHeight;

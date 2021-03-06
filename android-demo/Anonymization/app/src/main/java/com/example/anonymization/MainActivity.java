@@ -1,3 +1,11 @@
+/**
+ * Load image from Gallery part is based on:
+ * https://blog.csdn.net/yao_94/article/details/79447359
+ * The whole detection process is based on: ObjectDetectorTutorial
+ * https://github.com/William-Yin123/ObjectDetector
+ */
+
+
 package com.example.anonymization;
 
 import androidx.annotation.NonNull;
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(MainActivity.this, new
                             String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 } else {
-                    //Open Gallery
+                    /**open gallery*/
                     openAlbum();
                 }
             }
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         String imagePath = null;
         Uri uri = data.getData();
         if (DocumentsContract.isDocumentUri(this, uri)) {
-            //If the type of uri is document, then use document id
+            /**If the type of uri is document, then use document id*/
             String docId = DocumentsContract.getDocumentId(uri);
             if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 String id = docId.split(":")[1];
@@ -95,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
                 imagePath = getImagePath(contentUri, null);
             }
         } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            //If the type of uri is content, then use normal way
+            /**If the type of uri is content, then use normal way*/
             imagePath = getImagePath(uri, null);
         } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            //If the type of uri is path, then use file path
+            /**If the type of uri is path, then use file path*/
             imagePath = uri.getPath();
         }
         displayImage(imagePath);
@@ -114,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getImagePath(Uri uri, String selection) {
         String path = null;
-        //Get the full path of image
+        /**get the full path of image*/
         Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -137,17 +145,24 @@ public class MainActivity extends AppCompatActivity {
         gotoDetectionProcess(this.srcBitmap);
     }
 
+    /**
+     * @description This method is to run detection process for the input image
+     * @param bitmap
+     */
     private void gotoDetectionProcess(Bitmap bitmap){
-        long timeStamp0 = System.currentTimeMillis();
+        /**initialize the detection model*/
         Detector detector1 = new Detector(this, "ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync_2018_07_03.tflite", "labelmap1.txt", 0.3f, false);
         Detector detector2 = new Detector(this, "face_license2.tflite", "labelmap2.txt",0.2f, false);
-        long timeStamp1 = System.currentTimeMillis();
+//        long timeStamp1 = System.currentTimeMillis();
         output_img.setFramebitmap(bitmap);
+
+        /**run detection process*/
         Imgprocess imgprocess = new Imgprocess(bitmap, output_img, detector1, detector2);
         imgprocess.detectprocess();
-        long timeStamp2 = System.currentTimeMillis();
-        long time2 = timeStamp2 - timeStamp1;
 
-        Log.d("total process",":" + time2+" ms");
+        /**get total runtime*/
+//        long timeStamp2 = System.currentTimeMillis();
+//        long time2 = timeStamp2 - timeStamp1;
+//        Log.d("total process",":" + time2+" ms");
     }
 }

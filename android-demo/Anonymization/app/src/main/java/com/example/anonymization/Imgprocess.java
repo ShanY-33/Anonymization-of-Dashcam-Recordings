@@ -15,7 +15,6 @@ public class Imgprocess {
     private Bitmap frameBitmap;
     private int previewHeight, previewWidth;
     private Bitmap scaledBitmap;
-    //private Bitmap scaledBitmap2;
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
     private Matrix normToCropTransform;
@@ -55,7 +54,6 @@ public class Imgprocess {
         frameToCropTransform.invert(cropToFrameTransform);
 
         scaledBitmap = Bitmap.createBitmap(SCALE_SIZE1, SCALE_SIZE1, Bitmap.Config.ARGB_8888);
-        //scaledBitmap2 = Bitmap.createBitmap(SCALE_SIZE2, SCALE_SIZE2, Bitmap.Config.ARGB_8888);
     }
 
     private void ScaleImg(Bitmap srcBitmap, Bitmap dstBitmap, Matrix transformMatrix){
@@ -63,25 +61,34 @@ public class Imgprocess {
         canvas.drawBitmap(srcBitmap, transformMatrix, null);
     }
 
+    /**
+     * @description This is the main detection process.
+     */
     protected void detectprocess(){
+        // scale the image to the required input size of model
         ScaleImg(frameBitmap, scaledBitmap, frameToCropTransform);
-        List<Recognition> recognitionList1 = detector1.detect(scaledBitmap,frameBitmap);
 
+        // detect objects using detector1
+        List<Recognition> recognitionList1 = detector1.detect(scaledBitmap,frameBitmap);
+        // remove unnecessary detected recognitions
         String[] classes = {"person","car","bicycle","motorcycle","bus","truck"};
         recognitionList1 = ImageUtils.filteroutRecognitions(classes, recognitionList1);
+        // merge the overlapped and adjacent recognitions
         recognitionList1 = ImageUtils.mergeRecognitions(this.previewHeight,this.previewWidth, recognitionList1);
+        // expand the boundary of the recognitions
         recognitionList1 = ImageUtils.extendRecognitions(this.previewHeight,this.previewWidth,recognitionList1,10);
 
+        // crop the detected person and vehicle from the original image
         List<Bitmap> cropedBitmapsList = new ArrayList<>();
         for (Recognition recognition:recognitionList1
              ) {
             cropedBitmapsList.add(ImageUtils.cropImg(frameBitmap, recognition));
         }
 
+        // scale the image to the required input size of model
         List<Bitmap> scaledCropedBitmapsList = new ArrayList<>();
         for (Bitmap bitmap:cropedBitmapsList
              ) {
-
             cropToScaledCropTransform = ImageUtils.getTransformationMatrix(
                     bitmap.getWidth(),
                     bitmap.getHeight(),
@@ -94,13 +101,14 @@ public class Imgprocess {
             ScaleImg(bitmap, scaledBitmap2, cropToScaledCropTransform);
             scaledCropedBitmapsList.add(scaledBitmap2);
         }
-        //overlayView.setImageBitmap(scaledCropedBitmapsList.get(1));
 
+        // detect with detector2 to detect human face and license plate
         List<List<Recognition>> recognitionListList = new ArrayList<>();
         for (int i = 0; i < scaledCropedBitmapsList.size(); i++) {
             recognitionListList.add(detector2.detect(scaledCropedBitmapsList.get(i), cropedBitmapsList.get(i)));
         }
 
+        // calculate the location of recognitions in the original image, the final recogtions will be saved in recognitionList2
         List<Recognition> recognitionList2 = new ArrayList<>();
         for (int i = 0; i < recognitionListList.size(); i++) {
             for (int j = 0; j < recognitionListList.get(i).size(); j++) {
@@ -110,16 +118,14 @@ public class Imgprocess {
             }
         }
 
-
         System.out.println("Detection is finished");
 
-
-        //Normolized to Scaled
+        // convert recognition to scaledBitmap
         for(Recognition recognition : recognitionList2) {
             normToCropTransform.mapRect(recognition.getLocation());
         }
 
-        //Scaled to Frameimg
+        // convert scaledBitmap to frameBitmap
         for(Recognition recognition : recognitionList2) {
             cropToFrameTransform.mapRect(recognition.getLocation());
         }
