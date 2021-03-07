@@ -14,17 +14,20 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
     flag = False
     while not flag:
         if_modify = False
+        # reverse order is to avoid index out of bounds
         for i in range(len(locs)-1, 0, -1):
             x_min, y_min, x_max, y_max = locs[i]
             for j in range(i-1, 0, -1):
                 x_min2, y_min2, x_max2, y_max2 = locs[j]
 
+                # if IOU>0.3
                 if __calculate_overlap(locs[i], locs[j]) > 0.3:
                     locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
                     del locs[j]
                     if_modify = True
                     break
 
+                # if the two boxes are near to each other
                 if __is_near(img_height, img_width, locs[i], locs[j]):
                     locs[i] = [min(x_min, x_min2), min(y_min, y_min2), max(x_max, x_max2), max(y_max, y_max2)]
                     del locs[j]
@@ -40,6 +43,9 @@ def merge_boxes(img_height, img_width, boxes, threshold=0.1):
 
 
 def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
+    '''
+    crop detected box from original image
+    '''
     output_image = []
     abs_boxes = np.array(abs_boxes.copy())
 
@@ -53,6 +59,7 @@ def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
                                                     )
         output_image.append(np.array(cropped_image))
 
+    # save the clipped image
     if save:
         for i in range(len(output_image)):
             save_load.save_image(output_image[i], str(file_name) + '_box' + str(i), output_dir)
@@ -61,6 +68,9 @@ def clip_boxes(image_np, abs_boxes, file_name, output_dir, save=True):
 
 
 def calculate_position(ori_image_np, merged_box_position, boxes):
+    '''
+    calulate the location of detected human face and license plate in the original image
+    '''
     x_min, y_min, x_max, y_max = merged_box_position
     img_h = x_max - x_min
     img_w = y_max - y_min
@@ -98,23 +108,15 @@ def show_detected_boxes(image_np, boxes):
 
 
 def expand_boxes_area(img_height, img_width, abs_boxes, extend=10):
+    '''
+    expand the boundary of detection boxes
+    '''
     for i in range(len(abs_boxes)):
         abs_boxes[i][0] = max(abs_boxes[i][0] - extend, 0)
         abs_boxes[i][1] = max(abs_boxes[i][1] - extend, 0)
         abs_boxes[i][2] = min(abs_boxes[i][2] + extend, img_height)
         abs_boxes[i][3] = min(abs_boxes[i][3] + extend, img_width)
     return abs_boxes
-
-
-def __is_almost_same_box(img_height, img_width, box1, box2, threshold=0.01):
-    x_min, y_min, x_max, y_max = box1
-    x_min2, y_min2, x_max2, y_max2 = box2
-    if ((abs(x_min-x_min2) < threshold * img_width) and
-       (abs(x_max-x_max2) < threshold * img_width) and
-       (abs(y_max-y_max2) < threshold*img_height) and
-       (abs(y_min-y_min2) < threshold*img_height)):
-        return True
-    return False
 
 
 def __is_near(img_height, img_width, box1, box2, threshold=0.01):
@@ -134,18 +136,6 @@ def __is_small_box(img_height, img_width, box, threshold=0.1):
 
 
 def __calculate_overlap(box1, box2):
-    '''
-    说明：图像中，从左往右是 x 轴（0~无穷大），从上往下是 y 轴（0~无穷大），从左往右是宽度 w ，从上往下是高度 h
-    :param x1: 第一个框的左上角 x 坐标
-    :param y1: 第一个框的左上角 y 坐标
-    :param w1: 第一幅图中的检测框的宽度
-    :param h1: 第一幅图中的检测框的高度
-    :param x2: 第二个框的左上角 x 坐标
-    :param y2:
-    :param w2:
-    :param h2:
-    :return: 两个如果有交集则返回重叠度 IOU, 如果没有交集则返回 0
-    '''
     x1, y1, x_max, y_max = box1
     x2, y2, x_max2, y_max2 = box2
     h1 = y_max - y1

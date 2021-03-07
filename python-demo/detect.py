@@ -25,7 +25,7 @@ utils_ops.tf.app.flags.DEFINE_string('input_dir', 'res/testimg/input', 'Location
 utils_ops.tf.app.flags.DEFINE_string('output_dir', 'res/testimg/output', 'Location of directory for results')
 utils_ops.tf.app.flags.DEFINE_string('model_car_person_dir', 'res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model', 'Location of saved_model folder for car and person')
 utils_ops.tf.app.flags.DEFINE_string('model_face_license_dir', 'res/model/face_license/face_license/saved_model', 'Location of saved_model folder for face and license')
-utils_ops.tf.app.flags.DEFINE_float('threshold', '0.2', 'Value of detection threshold,default is 0.25', lower_bound=0.0, upper_bound=1.0)
+utils_ops.tf.app.flags.DEFINE_float('threshold', '0.2', 'Value of detection threshold,default is 0.2', lower_bound=0.0, upper_bound=1.0)
 utils_ops.tf.app.flags.DEFINE_bool('detail', 'False', 'Save output for each process during the detection')
 FLAGS = utils_ops.tf.app.flags.FLAGS
 
