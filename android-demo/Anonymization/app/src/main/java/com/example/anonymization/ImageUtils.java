@@ -183,7 +183,7 @@ public class ImageUtils {
                     }
 
                     // if the rects are close to each other, merge them
-                    if (isNear(imgHeight,imgWidth, rect1, rect2)) {
+                    if (isNear(imgHeight, imgWidth, rect1, rect2)) {
                         recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
                         recognitionList.remove(j);
                         ifModify = true;
@@ -195,8 +195,8 @@ public class ImageUtils {
             if (!ifModify) flag = true;
         }
 
-        for (Recognition recognition:recognitionList
-             ) {
+        for (Recognition recognition : recognitionList
+        ) {
             recognition.setLabel("merged");
             recognition.setProb(1.0f);
         }
@@ -231,19 +231,19 @@ public class ImageUtils {
             overlapHeight = Math.abs(Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
             overlapArea = overlapHeight * overlapWidth;
             totalArea = width1 * height1 + width2 * height2;
-            IOU = overlapArea / (float)(totalArea - overlapArea);
+            IOU = overlapArea / (float) (totalArea - overlapArea);
             return IOU;
         }
     }
 
     /**
-     *  determine whether the distance between two rect is too close
+     * determine whether the distance between two rect is too close
      */
     private static boolean isNear(int imgHeight, int imgWidth, Rect rect1, Rect rect2) {
         boolean xNear, yNear;
         final float THRESHOLD = 0.1f;
         // Only if there is a small one among the two rects, we need to determine if they are close
-        if (isSmall(imgHeight,imgWidth, rect1) || isSmall(imgHeight,imgWidth, rect2)) {
+        if (isSmall(imgHeight, imgWidth, rect1) || isSmall(imgHeight, imgWidth, rect2)) {
             // xNear = (the distance in the horizontal direction < set distance threshold)
             xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
                     < THRESHOLD * imgWidth + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
@@ -257,7 +257,7 @@ public class ImageUtils {
     }
 
     /**
-     *  determine whether a rect is small compared with the original image
+     * determine whether a rect is small compared with the original image
      */
     private static boolean isSmall(int imgHeight, int imgWidth, Rect rect) {
         return ((rect.bottom - rect.top) < 0.1 * imgHeight
@@ -265,13 +265,14 @@ public class ImageUtils {
     }
 
     /**
-     *  do extension to all rects in a recognitionList
+     * do extension to all rects in a recognitionList
+     *
      * @param EXTENSION how many pixels you want to expand outward for each edge
      */
-    protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList,int EXTENSION){
-        for (Recognition recognition:recognitionList
+    protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList, int EXTENSION) {
+        for (Recognition recognition : recognitionList
         ) {
-            recognition.setLocationInt(extendBoundary(imgHeight, imgWidth,recognition.getLocationInt(),EXTENSION));
+            recognition.setLocationInt(extendBoundary(imgHeight, imgWidth, recognition.getLocationInt(), EXTENSION));
         }
         return recognitionList;
     }
@@ -286,16 +287,17 @@ public class ImageUtils {
     }
 
     /**
-     *
+     * map the bounding box to the original image
      */
-    protected static Recognition convertRecognitiontoOriginalImg(Recognition recognition, Recognition recognitionSmall){
+    protected static Recognition convertRecognitiontoOriginalImg(Recognition recognition, Recognition recognitionSmall) {
         Rect newLocationInt = new Rect(recognition.getLocationInt().left + recognitionSmall.getLocationInt().left,
                 recognition.getLocationInt().top + recognitionSmall.getLocationInt().top,
                 recognition.getLocationInt().left + recognitionSmall.getLocationInt().right,
                 recognition.getLocationInt().top + recognitionSmall.getLocationInt().bottom);
+
         recognitionSmall.setImgHeight(recognition.getImgHeight());
         recognitionSmall.setImgWidth(recognition.getImgWidth());
         recognitionSmall.setLocationInt(newLocationInt);
-        return  recognitionSmall;
+        return recognitionSmall;
     }
 }

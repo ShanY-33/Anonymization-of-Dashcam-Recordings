@@ -144,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * @param bitmap
-     * @description This method is to run detection process for the input image
+     * This method is to run detection process for the input image
      */
     private void gotoDetectionProcess(Bitmap bitmap) {
         // Initialize the detection model. detector1 for human and vehicle and detetor2 for face and license plate

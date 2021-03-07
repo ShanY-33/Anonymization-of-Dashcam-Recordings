@@ -64,7 +64,7 @@ public class Imgprocess {
     }
 
     /**
-     * @description This is the main detection process.
+     * This is the main detection process.
      */
     protected void detectprocess() {
         // scale the image to the required input size of model
@@ -110,7 +110,7 @@ public class Imgprocess {
             recognitionListList.add(detector2.detect(scaledCropedBitmapsList.get(i), cropedBitmapsList.get(i)));
         }
 
-        // calculate the location of recognitions in the original image, the final recogtions will be saved in recognitionList2
+        // calculate the location of recognitions in the original image, the final recognitions will be saved in recognitionList2
         List<Recognition> recognitionList2 = new ArrayList<>();
         for (int i = 0; i < recognitionListList.size(); i++) {
             for (int j = 0; j < recognitionListList.get(i).size(); j++) {

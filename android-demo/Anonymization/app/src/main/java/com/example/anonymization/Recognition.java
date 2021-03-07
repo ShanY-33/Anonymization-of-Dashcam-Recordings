@@ -80,7 +80,7 @@ public class Recognition {
     }
 
     /**
-     * when location is changed, locationInt need to be recalculated
+     * When location is changed, locationInt need to be recalculated
      * @param location
      */
     public void setLocation(RectF location) {
@@ -92,7 +92,7 @@ public class Recognition {
     }
 
     /**
-     * when locationInt is changed, location need to be recalculated
+     * When locationInt is changed, location need to be recalculated
      * @param locationInt
      */
     public void setLocationInt(Rect locationInt) {
