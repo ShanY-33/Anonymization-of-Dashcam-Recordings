@@ -6,7 +6,6 @@
 
 package com.example.anonymization;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,20 +18,15 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.renderscript.RenderScript;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -149,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     private void gotoDetectionProcess(Bitmap bitmap) {
         // Initialize the detection model. detector1 for human and vehicle and detetor2 for face and license plate
         Detector detector1 = new Detector(this, "ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync_2018_07_03.tflite", "labelmap1.txt", 0.3f, false);
-        Detector detector2 = new Detector(this, "face_license2.tflite", "labelmap2.txt", 0.2f, false);
+        Detector detector2 = new Detector(this, "face_license.tflite", "labelmap2.txt", 0.2f, false);
 //        long timeStamp1 = System.currentTimeMillis();
         output_img.setFramebitmap(bitmap);
 

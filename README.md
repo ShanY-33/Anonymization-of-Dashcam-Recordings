@@ -5,13 +5,13 @@ In order to be able to use these images in research projects without hesitation,
 
 ## Architecture
 The repository is split up into these directories:
-* `android-demo/` android demo code
-* `python-demo/` python demo code
+* `android-demo/` 
+* `python-demo/` 
 
 For more information about each directory, please consult the corresponding readme found in each directory.
 
 ## Model
-Models can be downloaded google link!!![here](aaa). Each model contains:
+Models can be downloaded [here](https://drive.google.com/drive/folders/1W-NS6lsiXtAXFxid3mfYG-0dMdw0ijkg?usp=sharing). Each model contains:
 * config and checkpoint file
 * saved model for TensorFlow
 * .tflite model for TFLite
