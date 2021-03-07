@@ -9,6 +9,9 @@ from object_detection.utils import label_map_util
 
 
 def get_image_paths(input_dir):
+    '''
+    load all .jpg file path from the input directory
+    '''
     PATH_TO_TEST_IMAGES_DIR = pathlib.Path(input_dir)
     TEST_IMAGE_PATHS = sorted(list(PATH_TO_TEST_IMAGES_DIR.glob("*.jpg")))
     return TEST_IMAGE_PATHS
@@ -32,6 +35,10 @@ def load_label(label_path):
 
 
 def save_detection_result(image, file_name, output_dir):
+    '''
+    Save the detection as .txt file.
+    Each detection is saved like: `class confidence x_min y_min x_max y_max`.
+    '''
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     f = open(output_dir + file_name + ".txt", "w+")
