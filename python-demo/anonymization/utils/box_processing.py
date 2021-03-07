@@ -97,7 +97,7 @@ def show_detected_boxes(image_np, boxes):
     return image_copy
 
 
-def extend_boxes_area(img_height, img_width, abs_boxes, extend=10):
+def expand_boxes_area(img_height, img_width, abs_boxes, extend=10):
     for i in range(len(abs_boxes)):
         abs_boxes[i][0] = max(abs_boxes[i][0] - extend, 0)
         abs_boxes[i][1] = max(abs_boxes[i][1] - extend, 0)
