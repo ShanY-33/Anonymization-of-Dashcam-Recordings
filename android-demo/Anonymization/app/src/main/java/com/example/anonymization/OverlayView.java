@@ -28,13 +28,6 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
 
         borderPaint = new Paint();
         borderPaint.setColor(Color.BLACK);
-        //borderPaint.setStyle(Paint.Style.STROKE);
-        //borderPaint.setStrokeWidth(10.0f);
-        /*
-        textPaint = new Paint();
-        textPaint.setColor(Color.RED);
-        textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setTextSize(TEXT_SIZE);*/
     }
 
     public void setRecognitions(List<Recognition> recognitions) {
@@ -52,20 +45,20 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
             Matrix frameToCanvasMatrix = getFrameToCanvasMatrix(canvas, framebitmap);
 
             for (Recognition r : recognitions) {
-                //RectF rectF = new RectF(r.getLocation());
                 frameToCanvasMatrix.mapRect(r.getLocation());
-                //System.out.println(r.getLocation());
                 float cornerSize = Math.min(r.getLocation().width(), r.getLocation().height()) / 8.0f;
                 canvas.drawRoundRect(r.getLocation(), cornerSize, cornerSize, borderPaint);
 
-                /*//Draw Label Text
+                //Draw Label Text
+                /*
                 String labelString = String.format("%s %.2f%%", r.getLabel(), (100 * r.getProb()));
                 canvas.drawText(
                         labelString,
                         r.getLocation().left + (int) 1.5 * TEXT_SIZE,
                         r.getLocation().top + (int) 1.5 * TEXT_SIZE,
                         textPaint
-                );*/
+                );
+                */
             }
         }
     }

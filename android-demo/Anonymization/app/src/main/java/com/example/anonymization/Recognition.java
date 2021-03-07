@@ -1,4 +1,4 @@
-/* Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+/** Copyright 2019 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,25 @@ import android.graphics.RectF;
 
 public class Recognition {
     private String label;
-    private RectF location;
+    // confidence
     private float prob;
-
+    // normalized location in form of float, range from 0 to 1
+    private RectF location;
+    // real location in the input image, in form of int
     private Rect locationInt;
+
+    // size of the input image
     private int imgHeight;
     private int imgWidth;
 
+    /**
+     * Constructor
+     * @param label
+     * @param location normalized location in form of float, range from 0 to 1
+     * @param prob
+     * @param imgHeight height of the image for detection, used to calculate locationInt
+     * @param imgWidth width of the image for detection, used to calculate locationInt
+     */
     public Recognition(String label, RectF location, float prob, int imgHeight, int imgWidth) {
         this.label = label;
         this.location = location;
@@ -55,6 +67,10 @@ public class Recognition {
         return label;
     }
 
+    public float getProb() {
+        return prob;
+    }
+
     public RectF getLocation() {
         return location;
     }
@@ -63,6 +79,10 @@ public class Recognition {
         this.label = label;
     }
 
+    /**
+     * when location is changed, locationInt need to be recalculated
+     * @param location
+     */
     public void setLocation(RectF location) {
         this.location = location;
         this.locationInt = new Rect(Math.round(location.left * imgWidth),
@@ -71,6 +91,10 @@ public class Recognition {
                 Math.round(location.bottom * imgHeight));
     }
 
+    /**
+     * when locationInt is changed, location need to be recalculated
+     * @param locationInt
+     */
     public void setLocationInt(Rect locationInt) {
         this.locationInt = locationInt;
         this.location = new RectF(locationInt.left / (float) imgWidth,
@@ -81,10 +105,6 @@ public class Recognition {
 
     public void setProb(float prob) {
         this.prob = prob;
-    }
-
-    public float getProb() {
-        return prob;
     }
 
     public void setImgHeight(int imgHeight) {

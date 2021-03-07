@@ -1,3 +1,8 @@
+/**
+ * Detector is based on: ObjectDetectorTutorial
+ * https://github.com/William-Yin123/ObjectDetector
+ */
+
 package com.example.anonymization;
 
 import android.content.Context;
@@ -24,7 +29,6 @@ public class Detector {
     private static final float IMAGE_MEAN = 127.5f;
     private static final float IMAGE_STD = 127.5f;
     private static final int NUM_DETECTIONS = 10;
-
 
     private final Interpreter tflite;
     private final int imageSizeX;
@@ -103,15 +107,14 @@ public class Detector {
         outputMap.put(3, numDetections);
 
         // get runtime of each detection
-        /*
-        long timeStamp0 = System.currentTimeMillis();
-        */
+//        long timeStamp0 = System.currentTimeMillis();
+
         tflite.runForMultipleInputsOutputs(inputArray, outputMap);
-        /*
-        long timeStamp1 = System.currentTimeMillis();
-        long time = timeStamp1 - timeStamp0;
-        Log.d("detection time cost", " "+time+" ms");
-        */
+
+//        long timeStamp1 = System.currentTimeMillis();
+//        long time = timeStamp1 - timeStamp0;
+//        Log.d("detection time cost", " "+time+" ms");
+
 
         List<Recognition> recognitions = new ArrayList<>();
         for (int i = 0; i < numDetections[0]; i++) {
