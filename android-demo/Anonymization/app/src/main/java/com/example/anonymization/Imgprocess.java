@@ -20,12 +20,14 @@ public class Imgprocess {
     private Matrix normToCropTransform;
     private Matrix cropToScaledCropTransform;
 
+    // SCALE_SIZE must be equal as the required input tensor size of the model
+    // SCALE_SIZE1 is for the first detect model and SCALE_SIZE2 is for the second
     private static final int SCALE_SIZE1 = 300, SCALE_SIZE2 = 300;
 
-    private Detector detector1,detector2;
+    private Detector detector1, detector2;
     private OverlayView overlayView;
 
-    public Imgprocess(Bitmap bitmap, OverlayView overlayView, Detector detector1, Detector detector2){
+    public Imgprocess(Bitmap bitmap, OverlayView overlayView, Detector detector1, Detector detector2) {
         this.frameBitmap = bitmap;
         this.previewHeight = bitmap.getHeight();
         this.previewWidth = bitmap.getWidth();
@@ -56,7 +58,7 @@ public class Imgprocess {
         scaledBitmap = Bitmap.createBitmap(SCALE_SIZE1, SCALE_SIZE1, Bitmap.Config.ARGB_8888);
     }
 
-    private void ScaleImg(Bitmap srcBitmap, Bitmap dstBitmap, Matrix transformMatrix){
+    private void ScaleImg(Bitmap srcBitmap, Bitmap dstBitmap, Matrix transformMatrix) {
         Canvas canvas = new Canvas(dstBitmap);
         canvas.drawBitmap(srcBitmap, transformMatrix, null);
     }
@@ -64,31 +66,31 @@ public class Imgprocess {
     /**
      * @description This is the main detection process.
      */
-    protected void detectprocess(){
+    protected void detectprocess() {
         // scale the image to the required input size of model
         ScaleImg(frameBitmap, scaledBitmap, frameToCropTransform);
 
         // detect objects using detector1
-        List<Recognition> recognitionList1 = detector1.detect(scaledBitmap,frameBitmap);
+        List<Recognition> recognitionList1 = detector1.detect(scaledBitmap, frameBitmap);
         // remove unnecessary detected recognitions
-        String[] classes = {"person","car","bicycle","motorcycle","bus","truck"};
+        String[] classes = {"person", "car", "bicycle", "motorcycle", "bus", "truck"};
         recognitionList1 = ImageUtils.filteroutRecognitions(classes, recognitionList1);
         // merge the overlapped and adjacent recognitions
-        recognitionList1 = ImageUtils.mergeRecognitions(this.previewHeight,this.previewWidth, recognitionList1);
+        recognitionList1 = ImageUtils.mergeRecognitions(this.previewHeight, this.previewWidth, recognitionList1);
         // expand the boundary of the recognitions
-        recognitionList1 = ImageUtils.extendRecognitions(this.previewHeight,this.previewWidth,recognitionList1,10);
+        recognitionList1 = ImageUtils.extendRecognitions(this.previewHeight, this.previewWidth, recognitionList1, 10);
 
         // crop the detected person and vehicle from the original image
         List<Bitmap> cropedBitmapsList = new ArrayList<>();
-        for (Recognition recognition:recognitionList1
-             ) {
+        for (Recognition recognition : recognitionList1
+        ) {
             cropedBitmapsList.add(ImageUtils.cropImg(frameBitmap, recognition));
         }
 
         // scale the image to the required input size of model
         List<Bitmap> scaledCropedBitmapsList = new ArrayList<>();
-        for (Bitmap bitmap:cropedBitmapsList
-             ) {
+        for (Bitmap bitmap : cropedBitmapsList
+        ) {
             cropToScaledCropTransform = ImageUtils.getTransformationMatrix(
                     bitmap.getWidth(),
                     bitmap.getHeight(),
@@ -121,12 +123,12 @@ public class Imgprocess {
         System.out.println("Detection is finished");
 
         // convert recognition to scaledBitmap
-        for(Recognition recognition : recognitionList2) {
+        for (Recognition recognition : recognitionList2) {
             normToCropTransform.mapRect(recognition.getLocation());
         }
 
         // convert scaledBitmap to frameBitmap
-        for(Recognition recognition : recognitionList2) {
+        for (Recognition recognition : recognitionList2) {
             cropToFrameTransform.mapRect(recognition.getLocation());
         }
 

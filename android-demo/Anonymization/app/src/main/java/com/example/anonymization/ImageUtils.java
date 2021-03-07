@@ -130,9 +130,9 @@ public class ImageUtils {
 
     /**
      *
-     * @param bitmap
-     * @param recognition
-     * @return
+     * @param bitmap original image
+     * @param recognition detected box
+     * @return a new Bitmap of the detected area
      */
     protected static Bitmap cropImg(Bitmap bitmap, Recognition recognition) {
         return Bitmap.createBitmap(bitmap, recognition.getLocationInt().left,
@@ -143,9 +143,9 @@ public class ImageUtils {
 
     /**
      *
-     * @param classes
-     * @param recognitionList
-     * @return
+     * @param classes an array of the class labels you need
+     * @param recognitionList list of all detected objects
+     * @return the useless detected objects are removed from the recognition list
      */
     protected static List<Recognition> filteroutRecognitions(String[] classes, List<Recognition> recognitionList){
         Set<String> classesSet = new HashSet<String>(Arrays.asList(classes));
@@ -157,10 +157,10 @@ public class ImageUtils {
 
     /**
      *
-     * @param imgHeight
-     * @param imgWidth
-     * @param recognitionList
-     * @return
+     * @param imgHeight height of the input image
+     * @param imgWidth width of the input image
+     * @param recognitionList list of detected objects
+     * @return list of merged recognitions
      */
     protected static List<Recognition> mergeRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList) {
         boolean flag = false;
@@ -174,6 +174,7 @@ public class ImageUtils {
                 for (int j = i - 1; j > 0; j--) {
                     rect2 = recognitionList.get(j).getLocationInt();
 
+                    // if IOU > 0.3, merge the two rects
                     if (calculateIOU(rect1, rect2) > 0.3) {
                         recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
                         recognitionList.remove(j);
@@ -181,13 +182,13 @@ public class ImageUtils {
                         break;
                     }
 
+                    // if the rects are close to each other, merge them
                     if (isNear(imgHeight,imgWidth, rect1, rect2)) {
                         recognitionList.get(i).setLocationInt(mergeTwoRects(rect1, rect2));
                         recognitionList.remove(j);
                         ifModify = true;
                         break;
                     }
-
                 }
                 if (ifModify) break;
             }
@@ -213,6 +214,9 @@ public class ImageUtils {
 
     }
 
+    /**
+     * Intersection over Union = area of overlap / area of union
+     */
     private static float calculateIOU(Rect rect1, Rect rect2) {
         float IOU;
         int width1 = rect1.right - rect1.left, width2 = rect2.right - rect2.left;
@@ -232,31 +236,37 @@ public class ImageUtils {
         }
     }
 
+    /**
+     *  determine whether the distance between two rect is too close
+     */
     private static boolean isNear(int imgHeight, int imgWidth, Rect rect1, Rect rect2) {
         boolean xNear, yNear;
         final float THRESHOLD = 0.1f;
+        // Only if there is a small one among the two rects, we need to determine if they are close
         if (isSmall(imgHeight,imgWidth, rect1) || isSmall(imgHeight,imgWidth, rect2)) {
+            // xNear = (the distance in the horizontal direction < set distance threshold)
             xNear = Math.abs((rect1.right + rect1.left) / 2.0 - (rect2.right + rect2.left) / 2.0)
                     < THRESHOLD * imgWidth + (rect1.right - rect1.left) / 2.0 + (rect2.right - rect2.left) / 2.0;
+            // yNear = (the distance in the vertical direction < set distance threshold)
             yNear = Math.abs((rect1.bottom + rect1.top) / 2.0 - (rect2.bottom + rect2.top) / 2.0)
                     < THRESHOLD * imgHeight + (rect1.bottom - rect1.top) / 2.0 + (rect2.bottom - rect2.top) / 2.0;
             return xNear && yNear;
         }
+        // If they are all relative big rects, we don't want them merge, so just return false
         return false;
     }
 
+    /**
+     *  determine whether a rect is small compared with the original image
+     */
     private static boolean isSmall(int imgHeight, int imgWidth, Rect rect) {
         return ((rect.bottom - rect.top) < 0.1 * imgHeight
                 && (rect.right - rect.left) < 0.1 * imgWidth);
     }
 
     /**
-     *
-     * @param imgHeight
-     * @param imgWidth
-     * @param recognitionList
-     * @param EXTENSION
-     * @return
+     *  do extension to all rects in a recognitionList
+     * @param EXTENSION how many pixels you want to expand outward for each edge
      */
     protected static List<Recognition> extendRecognitions(int imgHeight, int imgWidth, List<Recognition> recognitionList,int EXTENSION){
         for (Recognition recognition:recognitionList
@@ -277,9 +287,6 @@ public class ImageUtils {
 
     /**
      *
-     * @param recognition
-     * @param recognitionSmall
-     * @return
      */
     protected static Recognition convertRecognitiontoOriginalImg(Recognition recognition, Recognition recognitionSmall){
         Rect newLocationInt = new Rect(recognition.getLocationInt().left + recognitionSmall.getLocationInt().left,

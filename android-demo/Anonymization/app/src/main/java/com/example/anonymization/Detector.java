@@ -36,6 +36,14 @@ public class Detector {
     private List<String> labels;
     boolean quantized;
 
+    /**
+     * Constructor
+     * @param context
+     * @param MODEL_PATH file name of the model
+     * @param LABEL_PATH
+     * @param THRESHOLD threshold of confidence
+     * @param quantized If the model is a quantized model,set it true. Else if it is a float model, set it false
+     */
     public Detector(Context context, String MODEL_PATH, String LABEL_PATH, float THRESHOLD, boolean quantized) {
         try {
             this.MODEL_PATH = MODEL_PATH;

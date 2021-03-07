@@ -21,7 +21,7 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
 
     private Paint borderPaint, textPaint;
     private static final int TEXT_SIZE = 24;
-    private Bitmap framebitmap;
+    private Bitmap frameBitmap;
 
     public OverlayView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -35,14 +35,14 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
     }
 
     public void setFramebitmap(Bitmap bitmap){
-        this.framebitmap = bitmap;
+        this.frameBitmap = bitmap;
     }
 
     @Override
     public synchronized void draw(final Canvas canvas) {
         super.draw(canvas);
         if (recognitions != null) {
-            Matrix frameToCanvasMatrix = getFrameToCanvasMatrix(canvas, framebitmap);
+            Matrix frameToCanvasMatrix = getFrameToCanvasMatrix(canvas, frameBitmap);
 
             for (Recognition r : recognitions) {
                 frameToCanvasMatrix.mapRect(r.getLocation());
@@ -67,14 +67,14 @@ public class OverlayView extends androidx.appcompat.widget.AppCompatImageView {
         int frameWidth = bitmap.getWidth();
         int frameHeight = bitmap.getHeight();
 
-        float multiplierw = canvas.getWidth()/(float) frameWidth;
-        float multiplierh = canvas.getHeight()/(float) frameHeight;
+        float multiplierW = canvas.getWidth()/(float) frameWidth;
+        float multiplierH = canvas.getHeight()/(float) frameHeight;
 
         return ImageUtils.getTransformationMatrix(
                 frameWidth,
                 frameHeight,
-                (int) (multiplierw * frameWidth),
-                (int) (multiplierh * frameHeight),
+                (int) (multiplierW * frameWidth),
+                (int) (multiplierH * frameHeight),
                 0,
                 false
         );
