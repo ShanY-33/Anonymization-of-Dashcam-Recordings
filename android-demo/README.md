@@ -4,7 +4,7 @@
 
 ## Use Other Model
 If you want to use your own model, please do the following steps:
-* You can use your model to detect car and person. The .tflite model and label `labelmap1.txt` need to be located in `./Anonymization/app/src/main/assets/`. If you use COCO dataset label, then you don't need to change the label file.
+* The .tflite model and label `labelmap1.txt` need to be located in `./Anonymization/app/src/main/assets/`. If you use COCO dataset label, then you don't need to change the labelmap file.
 * According to the model structure, you need to make some minor changes in the code. More details are in the code comment.
     * ./Anonymization/app/src/main/java/com/example/anonymization/Imgprocess.java
         ```
