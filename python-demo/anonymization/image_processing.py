@@ -59,7 +59,7 @@ class Img():
         return(output_dict)
 
     def detection_car_person(self, model, threshold=THRESHOLD_CAR_PERSON, detection_classes=(1, 3, 4, 6, 8)):
-        # 1: person; 3: car; 4: motorcycle; 6: bus; 8: truck
+        # run detection
         output_dict = self.gerneral_detection(self.image_np, model, threshold)
 
         len = output_dict['detection_boxes'].shape[0]
@@ -68,18 +68,23 @@ class Img():
         output_dict_list['detection_classes'] = (output_dict['detection_classes']).tolist()
         output_dict_list['detection_scores'] = (output_dict['detection_scores']).tolist()
 
+        # remove the detection we don't need
         for i in range(len-1, -1, -1):
+            # detection_class: 1: person; 3: car; 4: motorcycle; 6: bus; 8: truck
             if ((output_dict_list['detection_classes'][i] not in detection_classes) or (output_dict_list['detection_scores'][i] < threshold)):
                 del (output_dict_list['detection_boxes'])[i]
                 del (output_dict_list['detection_classes'])[i]
                 del (output_dict_list['detection_scores'])[i]
+
         output_dict_list['detection_boxes'] = np.array(output_dict_list['detection_boxes'])
         output_dict_list['detection_classes'] = np.array(output_dict_list['detection_classes'])
         output_dict_list['detection_scores'] = np.array(output_dict_list['detection_scores'])
 
         self.boxes_list.append(output_dict_list)
+
+        # merge and expand
         self.merged_boxes = box_processing.merge_boxes(self.height, self.width, self.boxes_list[0]['detection_boxes'])
-        self.merged_boxes = box_processing.extend_boxes_area(self.height, self.width, self.merged_boxes)
+        self.merged_boxes = box_processing.expand_boxes_area(self.height, self.width, self.merged_boxes)
 
     def detection_face_license(self, model, threshold=THRESHOLD_FACE_LICENSE):
         merged_boxes_copy = self.merged_boxes.copy()
@@ -88,6 +93,8 @@ class Img():
         temp_output_dict['detection_boxes'] = []
         temp_output_dict['detection_classes'] = []
         temp_output_dict['detection_scores'] = []
+
+        # crop bounding boxes
         for i in range(len(xyhw_box)):
             x, y, h, w = xyhw_box[i]
             cropped_image = tf.image.crop_to_bounding_box(
@@ -106,6 +113,7 @@ class Img():
             output_dict_list['detection_classes'] = (output_dict['detection_classes']).tolist()
             output_dict_list['detection_scores'] = (output_dict['detection_scores']).tolist()
 
+            # remove the bounding box with low confidence
             for j in range(len_dict-1, -1, -1):
                 if (output_dict_list['detection_scores'][j] < threshold):
                     del (output_dict_list['detection_boxes'])[j]
@@ -113,6 +121,7 @@ class Img():
                     del (output_dict_list['detection_scores'])[j]
 
             if len(output_dict_list['detection_boxes']) > 0:
+                # map the bounding box back to the original image
                 output_dict_list['detection_boxes'] = box_processing.calculate_position(self.image_np, self.merged_boxes[i], output_dict_list['detection_boxes'])
                 for k in range(len(output_dict_list['detection_boxes'])):
                     temp_output_dict['detection_boxes'].append(output_dict_list['detection_boxes'][k])
