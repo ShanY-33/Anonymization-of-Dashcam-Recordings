@@ -25,7 +25,7 @@ To have a quick test of the code, you can simplily run `python detect.py` in Ter
 If you want to anonymized your own images or use your own model, please follow the usage example.
 ```
     python detect.py \
-        --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/saved_model/ \
+        --model_car_person_dir=res/model/car_person/ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync_2018_07_03/saved_model/ \
         --model_face_license_dir=res/model/face_license/face_license/saved_model/ \
         --threshold=0.2 \
         --detail=False\
