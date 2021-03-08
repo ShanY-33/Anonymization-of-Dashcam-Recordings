@@ -61,7 +61,7 @@ public class ImageUtils {
         final int inWidth = transpose ? srcHeight : srcWidth;
         final int inHeight = transpose ? srcWidth : srcHeight;
 
-        /** Apply scaling if necessary.*/
+        // Apply scaling if necessary.
         if (inWidth != dstWidth || inHeight != dstHeight) {
             final float scaleFactorX = dstWidth / (float) inWidth;
             final float scaleFactorY = dstHeight / (float) inHeight;

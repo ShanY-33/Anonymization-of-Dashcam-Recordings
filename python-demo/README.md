@@ -12,14 +12,14 @@ To use our software, you'll need to install several python packages. Please use 
 pip install -r requirements.txt
 ```
 ### TensorFlow Object Detection API
-Our detection framework is based on [TensorFlow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). We use the Object Detection API with TensorFlow 2.
+Our detection framework is based on [TensorFlow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). So you need to install it before you use our program. We use the Object Detection API with TensorFlow 2.
 Please find a detailed installation document [here](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md).
 
 
 
 ## Usage Example
 ### Quick Test
-To have a quick test of the code, you can simplily run `python detection.py` in Terminal. The test image in `res/testimg/input/` will be anonymized and you can find the output image in `res/testimg/input/anonymized/`.
+To have a quick test of the code, you can simplily run `python detect.py` in Terminal. The test image in `res/testimg/input/` will be anonymized and you can find the output image in `res/testimg/input/anonymized/`.
 
 ### Anonymize Your Images
 If you want to anonymized your own images or use your own model, please follow the usage example.
