@@ -35,7 +35,7 @@ public class Recognition {
      * Constructor
      * @param label
      * @param location normalized location in form of float, range from 0 to 1
-     * @param prob
+     * @param prob confidence
      * @param imgHeight height of the image for detection, used to calculate locationInt
      * @param imgWidth width of the image for detection, used to calculate locationInt
      */
