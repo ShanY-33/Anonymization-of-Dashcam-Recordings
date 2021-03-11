@@ -1,4 +1,4 @@
-tensorflow==2.2.0
+tensorflow>=2.2.0
 numpy==1.18.1
 pillow==8.0.1
 opencv-python
