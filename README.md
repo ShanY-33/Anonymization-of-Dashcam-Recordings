@@ -7,7 +7,6 @@ In order to be able to use these images in research projects without hesitation,
 The repository is split up into these directories:
 * `android-demo/` 
 * `python-demo/` 
-* `skripts/` skripts for model training
 
 For more information about each directory, please consult the corresponding readme found in each directory.
 
