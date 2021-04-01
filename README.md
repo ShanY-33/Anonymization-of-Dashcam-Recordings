@@ -32,8 +32,8 @@ The code follows the steps given below:
  <img src="img/0.jpg" width="75%" height="75%">
  <img src="img/1.jpg" width="75%" height="75%">
  <img src="img/afd0aabb-caf615d5_box1.jpg" width="20%" height="300"><img src="img/afd0aabb-caf615d5_box2.jpg" width="20%" height="100%"><img src="img/afd0aabb-caf615d5_box3.jpg" width="20%" height="100%">
- <img src="img/2.jpg" width="100%">
- <img src="img/4.jpg" width="100%">
+ <img src="img/2.jpg" width="75%" height="75%">
+ <img src="img/4.jpg" width="75%" height="75%">
 </div>
 
 
