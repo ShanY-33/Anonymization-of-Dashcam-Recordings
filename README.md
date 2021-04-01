@@ -35,7 +35,6 @@ The code follows the steps given below:
 
 
 ## Results
-<img src="img/rst1.jpg" width="100%">
 <img src="img/rst2.jpg" width="100%">
 <img src="img/rst3.jpg" width="100%">
 
