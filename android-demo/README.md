@@ -1,6 +1,6 @@
 # Android Sample Code
 
-<img src="../img/android-demo.gif" width="50%">
+<img src="../img/rxwg1-wpuot.gif" width="50%">
 
 ## Use Other Model
 If you want to use other model, please do the following steps:
