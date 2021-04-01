@@ -29,7 +29,7 @@ The code follows the steps given below:
 * Calculate the detected boxes' location in the original image.
 * Blur the corresponding area.
 <div align="center">
- <img src="img/afd0aabb-caf615d5_box1.jpg" width="33%" height="100%"><img src="img/afd0aabb-caf615d5_box2.jpg" width="33%" height="100%"><img src="img/afd0aabb-caf615d5_box3.jpg" width="33%" height="100%">
+ <img src="img/afd0aabb-caf615d5_box1.jpg" width="33%" height="80%"><img src="img/afd0aabb-caf615d5_box2.jpg" width="33%" height="100%"><img src="img/afd0aabb-caf615d5_box3.jpg" width="33%" height="100%">
 </div>
 
 
